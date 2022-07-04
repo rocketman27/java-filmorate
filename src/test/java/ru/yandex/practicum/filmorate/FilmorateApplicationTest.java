@@ -11,9 +11,9 @@ import ru.yandex.practicum.filmorate.controllers.UserController;
 class FilmorateApplicationTest {
 
     @Autowired
-    FilmController filmController;
+    private FilmController filmController;
     @Autowired
-    UserController userController;
+    private UserController userController;
 
     @Test
     public void contextLoads() {

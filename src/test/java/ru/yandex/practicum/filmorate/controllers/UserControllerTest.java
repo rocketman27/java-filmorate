@@ -131,7 +131,7 @@ class UserControllerTest {
 
     @Test
     @Order(5)
-    void shouldReturnUsers() throws Exception {
+    public void shouldReturnUsers() throws Exception {
         this.mockMvc.perform(get("/users")
                     .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())

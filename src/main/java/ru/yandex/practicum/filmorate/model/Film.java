@@ -15,7 +15,7 @@ public class Film {
     private String name;
     @Size(max = 200, message = "Description size cannot be more than 200 characters")
     private String description;
-    @AfterDate(value = "18951228")
+    @AfterDate(value = "18951228", message = "Release date should be after threshold")
     private LocalDate releaseDate;
     @Positive(message = "Duration cannot be negative")
     private int duration;

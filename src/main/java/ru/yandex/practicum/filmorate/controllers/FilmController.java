@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.filmorate.Utils;
+import ru.yandex.practicum.filmorate.utils.Utils;
 import ru.yandex.practicum.filmorate.validator.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 

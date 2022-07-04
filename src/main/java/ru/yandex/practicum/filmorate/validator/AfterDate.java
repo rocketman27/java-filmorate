@@ -22,7 +22,7 @@ import static ru.yandex.practicum.filmorate.validator.AfterDate.List;
 @Repeatable(List.class)
 public @interface AfterDate {
 
-    String message() default "should be before threshold";
+    String message() default "should be after threshold";
 
     Class<?>[] groups() default {};
 

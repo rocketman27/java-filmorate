@@ -138,7 +138,7 @@ class FilmControllerTest {
 
     @Test
     @Order(5)
-    void shouldReturnFilms() throws Exception {
+    public void shouldReturnFilms() throws Exception {
         this.mockMvc.perform(get("/films")
                     .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())

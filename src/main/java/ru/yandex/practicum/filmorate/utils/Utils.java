@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate;
+package ru.yandex.practicum.filmorate.utils;
 
 public class Utils {
     private static int lastUserId = 0;
