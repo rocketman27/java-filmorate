@@ -2,57 +2,72 @@ package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.filmorate.utils.Utils;
-import ru.yandex.practicum.filmorate.validator.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final HashMap<Integer, User> users = new HashMap<>();
+    private final InMemoryUserStorage userStorage;
+    private final UserService userService;
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public User addUser(@Valid @RequestBody User user) {
-        user.setId(Utils.generateUserId());
-
-        if (user.getName().isBlank()) {
-            log.info("User's name is blank, setting name = login = {}", user.getLogin());
-            user.setName(user.getLogin());
-        }
-
-        users.put(user.getId(), user);
-        log.info("User with id {} has been successfully added", user.getId());
-        return user;
-    }
-
-    @PutMapping
-    public User updateUser(@Valid @RequestBody User user) {
-        if (users.containsKey(user.getId())) {
-            users.put(user.getId(), user);
-            log.info("User with id {} has been updated", user.getId());
-        } else {
-            log.warn("User with id {} doesn't exist", user.getId());
-            throw new ValidationException(String.format("User with id %s doesn't exist", user.getId()));
-        }
-        return user;
+    public UserController(InMemoryUserStorage userStorage, UserService userService) {
+        this.userStorage = userStorage;
+        this.userService = userService;
     }
 
     @GetMapping
     public List<User> getUsers() {
-        return new ArrayList<>(users.values());
+        return userStorage.getUsers();
+    }
+
+    @GetMapping("/{userId}")
+    public User getUserById(@PathVariable int userId) {
+        return userStorage.getUserById(userId);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public User addUser(@Valid @RequestBody User user) {
+        return userStorage.addUser(user);
+    }
+
+    @PutMapping
+    public User updateUser(@Valid @RequestBody User user) {
+        return userStorage.updateUser(user);
+    }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable int id, @PathVariable int friendId) {
+        userService.addFriend(id, friendId);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void deleteFriend(@PathVariable int id, @PathVariable int friendId) {
+        userService.deleteFriend(id, friendId);
+    }
+
+    @GetMapping("{id}/friends")
+    public List<User> getFriends(@PathVariable int id) {
+        return userService.getFriends(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> getMutualFriends(@PathVariable int id, @PathVariable int otherId) {
+        return userService.getMutualFriends(id, otherId);
     }
 }

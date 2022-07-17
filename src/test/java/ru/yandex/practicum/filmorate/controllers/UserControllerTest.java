@@ -115,7 +115,7 @@ class UserControllerTest {
 
     @Test
     @Order(4)
-    public void shouldReturnStatusCode500IfUserDoesNotExist() throws Exception {
+    public void shouldReturnStatusCode404IfUserDoesNotExist() throws Exception {
         this.mockMvc.perform(put("/users")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("{\n" +
@@ -126,7 +126,7 @@ class UserControllerTest {
                             "  \"birthday\": \"1976-09-20\"\n" +
                             "}")
                     .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isInternalServerError());
+                    .andExpect(status().isNotFound());
     }
 
     @Test
