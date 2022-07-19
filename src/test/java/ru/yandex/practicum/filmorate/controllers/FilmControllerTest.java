@@ -122,7 +122,7 @@ class FilmControllerTest {
 
     @Test
     @Order(4)
-    public void shouldReturnStatusCode500IfFilmDoesNotExist() throws Exception {
+    public void shouldReturnStatusCode404IfFilmDoesNotExist() throws Exception {
         this.mockMvc.perform(put("/films")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("{\n" +
@@ -133,7 +133,7 @@ class FilmControllerTest {
                             "    \"duration\": 100\n" +
                             "}")
                     .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isInternalServerError());
+                    .andExpect(status().isNotFound());
     }
 
     @Test
