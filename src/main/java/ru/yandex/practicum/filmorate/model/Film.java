@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Data
 public class Film {
-    private int id;
+    private long id;
     @NotBlank(message = "Name cannot be blank")
     private String name;
     @Size(max = 200, message = "Description size cannot be more than 200 characters")
@@ -21,13 +21,13 @@ public class Film {
     private LocalDate releaseDate;
     @Positive(message = "Duration cannot be negative")
     private int duration;
-    private Set<Integer> likes = new HashSet<>();
+    private Set<Long> likes = new HashSet<>();
 
-    public void addLike(int userId) {
+    public void addLike(long userId) {
         likes.add(userId);
     }
 
-    public void deleteLike(int userId) {
+    public void deleteLike(long userId) {
         likes.remove(userId);
     }
 }

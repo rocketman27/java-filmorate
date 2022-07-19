@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Data
 public class User {
-    private int id;
+    private long id;
     @NotBlank(message = "email is mandatory, cannot be blank")
     @Email(message = "email should be valid")
     private String email;
@@ -22,13 +22,13 @@ public class User {
     private String name;
     @Past
     private LocalDate birthday;
-    private Set<Integer> friends = new HashSet<>();
+    private Set<Long> friends = new HashSet<>();
 
-    public void addFriend(int friendId) {
+    public void addFriend(long friendId) {
         friends.add(friendId);
     }
 
-    public void deleteFriend(int friendId) {
+    public void deleteFriend(long friendId) {
         friends.remove(friendId);
     }
 }

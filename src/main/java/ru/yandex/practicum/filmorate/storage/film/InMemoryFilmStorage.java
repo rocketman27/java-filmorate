@@ -10,11 +10,12 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
-    private final HashMap<Integer, Film> films = new HashMap<>();
+    private final Map<Long, Film> films = new HashMap<>();
 
     @Override
     public Film addFilm(@NotNull Film film) {
@@ -31,7 +32,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film getFilmById(int id) {
+    public Film getFilmById(long id) {
         if (films.containsKey(id)) {
             return films.get(id);
         } else {

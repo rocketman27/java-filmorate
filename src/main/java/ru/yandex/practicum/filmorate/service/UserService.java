@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -14,11 +15,28 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserStorage userStorage;
 
+    @Autowired
     public UserService(UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
-    public void addFriend(int userId, int friendId) {
+    public List<User> getUsers() {
+        return userStorage.getUsers();
+    }
+
+    public User getUserById(long id) {
+        return userStorage.getUserById(id);
+    }
+
+    public User addUser(User user) {
+        return userStorage.addUser(user);
+    }
+
+    public User updateUser(User user) {
+        return userStorage.updateUser(user);
+    }
+
+    public void addFriend(long userId, long friendId) {
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
 
@@ -35,12 +53,12 @@ public class UserService {
         }
     }
 
-    public void deleteFriend(int userId, int friendId) {
+    public void deleteFriend(long userId, long friendId) {
         userStorage.getUserById(userId)
                    .deleteFriend(friendId);
     }
 
-    public List<User> getFriends(int id) {
+    public List<User> getFriends(long id) {
         return userStorage.getUserById(id)
                           .getFriends()
                           .stream()
@@ -48,7 +66,7 @@ public class UserService {
                           .collect(Collectors.toList());
     }
 
-    public List<User> getMutualFriends(int id, int otherId) {
+    public List<User> getMutualFriends(long id, long otherId) {
         List<User> userFriends = getFriends(id);
         List<User> otherUserFriends = getFriends(otherId);
 

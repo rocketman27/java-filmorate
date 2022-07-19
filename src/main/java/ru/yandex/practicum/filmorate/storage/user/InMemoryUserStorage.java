@@ -9,11 +9,12 @@ import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Component
 public class InMemoryUserStorage implements UserStorage {
-    private final HashMap<Integer, User> users = new HashMap<>();
+    private final Map<Long, User> users = new HashMap<>();
 
     @Override
     public User addUser(User user) {
@@ -35,7 +36,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User getUserById(int id) {
+    public User getUserById(long id) {
         if (users.containsKey(id)) {
             return users.get(id);
         } else {
