@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.models.Film;
+import ru.yandex.practicum.filmorate.services.FilmService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -26,7 +27,7 @@ public class FilmController {
     private final FilmService filmService;
 
     @Autowired
-    public FilmController(FilmService filmService) {
+    public FilmController(@Qualifier("filmServiceImpl") FilmService filmService) {
         this.filmService = filmService;
     }
 

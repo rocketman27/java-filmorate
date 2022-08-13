@@ -1,16 +1,18 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.models;
 
+import lombok.Builder;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.validator.AfterDate;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Data
+@Builder(setterPrefix = "with")
 public class Film {
     private long id;
     @NotBlank(message = "Name cannot be blank")
@@ -21,13 +23,7 @@ public class Film {
     private LocalDate releaseDate;
     @Positive(message = "Duration cannot be negative")
     private int duration;
-    private Set<Long> likes = new HashSet<>();
-
-    public void addLike(long userId) {
-        likes.add(userId);
-    }
-
-    public void deleteLike(long userId) {
-        likes.remove(userId);
-    }
+    @NotNull
+    private Mpa mpa;
+    private List<Genre> genres;
 }
