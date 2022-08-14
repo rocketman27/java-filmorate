@@ -1,10 +1,12 @@
 package ru.yandex.practicum.filmorate.controllers;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +24,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@AutoConfigureTestDatabase
 @AutoConfigureMockMvc
+@RequiredArgsConstructor
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class FilmControllerTest {
 
@@ -48,7 +52,8 @@ class FilmControllerTest {
                 "    \"name\": \"nisi eiusmod\",\n" +
                 "    \"description\": \"adipisicing\",\n" +
                 "    \"releaseDate\": \"1967-03-25\",\n" +
-                "    \"duration\": 100\n" +
+                "    \"duration\": 100,\n" +
+                "    \"mpa\": { \"id\": 1}\n" +
                 "}";
     }
 
@@ -70,7 +75,8 @@ class FilmControllerTest {
                                 "  \"name\": \"\",\n" +
                                 "  \"description\": \"Description\",\n" +
                                 "  \"releaseDate\": \"1900-03-25\",\n" +
-                                "  \"duration\": 200\n" +
+                                "  \"duration\": 200,\n" +
+                                "    \"mpa\": { \"id\": 1}\n" +
                                 "}")),
                 Arguments.of(Named.of("Invalid description",
                         "{\n" +
@@ -80,22 +86,25 @@ class FilmControllerTest {
                                 "Огюста Куглова, который задолжал им деньги, а именно 20 миллионов. " +
                                 "о Куглов, который за время «своего отсутствия», стал кандидатом " +
                                 "Коломбани.\",\n" +
-                                "    \"releaseDate\": \"1900-03-25\",\n" +
-                                "  \"duration\": 200\n" +
+                                "  \"releaseDate\": \"1900-03-25\",\n" +
+                                "  \"duration\": 200,\n" +
+                                "  \"mpa\": { \"id\": 1}\n" +
                                 "}")),
                 Arguments.of(Named.of("Invalid release date",
                         "{\n" +
                                 "  \"name\": \"Film name\",\n" +
                                 "  \"description\": \"Description\",\n" +
                                 "  \"releaseDate\": \"1895-12-27\",\n" +
-                                "  \"duration\": 200\n" +
+                                "  \"duration\": 200,\n" +
+                                "  \"mpa\": { \"id\": 1}\n" +
                                 "}")),
                 Arguments.of(Named.of("Invalid duration",
                         "{\n" +
                                 "  \"name\": \"Film name\",\n" +
                                 "  \"description\": \"Description\",\n" +
                                 "  \"releaseDate\": \"1895-12-29\",\n" +
-                                "  \"duration\": -200\n" +
+                                "  \"duration\": -200,\n" +
+                                "  \"mpa\": { \"id\": 1}\n" +
                                 "}")));
     }
 
@@ -109,7 +118,8 @@ class FilmControllerTest {
                             "    \"name\": \"Midnight in Paris\",\n" +
                             "    \"description\": \"Woody Allen's film\",\n" +
                             "    \"releaseDate\": \"2011-05-20\",\n" +
-                            "    \"duration\": 100\n" +
+                            "    \"duration\": 100,\n" +
+                            "    \"mpa\": { \"id\": 1}\n" +
                             "}")
                     .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
@@ -130,7 +140,8 @@ class FilmControllerTest {
                             "    \"name\": \"Midnight in Paris\",\n" +
                             "    \"description\": \"Woody Allen's film\",\n" +
                             "    \"releaseDate\": \"2011-05-20\",\n" +
-                            "    \"duration\": 100\n" +
+                            "    \"duration\": 100,\n" +
+                            "    \"mpa\": { \"id\": 1}\n" +
                             "}")
                     .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isNotFound());

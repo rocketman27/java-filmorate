@@ -1,10 +1,12 @@
 package ru.yandex.practicum.filmorate.controllers;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -17,7 +19,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@AutoConfigureTestDatabase
 @AutoConfigureMockMvc
+@RequiredArgsConstructor
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserControllerTest {
 
@@ -27,13 +31,14 @@ class UserControllerTest {
     @ParameterizedTest()
     @Order(1)
     @MethodSource("provideValidRequests")
-    public void shouldCreateUser(String request, int expectedId, String expectedName, String expectedEmail) throws Exception {
+    public void shouldCreateUser(String request, int expectedId, String expectedLogin,
+                                 String expectedName, String expectedEmail) throws Exception {
         this.mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                                            .content(request)
                                            .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isCreated())
                     .andExpect(jsonPath("$.id").value(expectedId))
-                    .andExpect(jsonPath("$.login").value("dolore"))
+                    .andExpect(jsonPath("$.login").value(expectedLogin))
                     .andExpect(jsonPath("$.name").value(expectedName))
                     .andExpect(jsonPath("$.email").value(expectedEmail))
                     .andExpect(jsonPath("$.birthday").value("1946-08-20"));
@@ -47,14 +52,14 @@ class UserControllerTest {
                                 "    \"name\": \"Nick Name\",\n" +
                                 "    \"email\": \"mail@mail.ru\",\n" +
                                 "    \"birthday\": \"1946-08-20\"\n" +
-                                "}"), 1, "Nick Name", "mail@mail.ru"),
+                                "}"), 1, "dolore", "Nick Name", "mail@mail.ru"),
                 Arguments.of(Named.of("Request with empty name",
                         "{\n" +
-                                "    \"login\": \"dolore\",\n" +
+                                "    \"login\": \"dolores\",\n" +
                                 "    \"name\": \"\",\n" +
                                 "    \"email\": \"mail@yahoo.com\",\n" +
                                 "    \"birthday\": \"1946-08-20\"\n" +
-                                "}"), 2, "dolore", "mail@yahoo.com"));
+                                "}"), 2, "dolores", "dolores", "mail@yahoo.com"));
     }
 
     @ParameterizedTest()
