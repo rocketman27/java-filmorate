@@ -38,14 +38,12 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public Film addFilm(Film film) {
         log.info("Received request to add film with id={}", film.getId());
-        long filmId = Utils.generateFilmId();
-        film.setId(filmId);
 
         Mpa mpa = mpaDao.getMpaById(film.getMpa()
                                         .getId());
         film.setMpa(mpa);
 
-        filmDao.addFilm(film);
+        film = filmDao.addFilm(film);
         genresDao.addGenresForFilm(film);
         log.info("Film with id={} has been successfully added", film.getId());
         return film;

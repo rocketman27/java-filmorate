@@ -4,9 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.FriendsDao;
-import ru.yandex.practicum.filmorate.models.User;
 import ru.yandex.practicum.filmorate.dao.UserDao;
-import ru.yandex.practicum.filmorate.utils.Utils;
+import ru.yandex.practicum.filmorate.models.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,11 +43,9 @@ public class UserServiceImpl implements UserService {
             user.setName(user.getLogin());
         }
 
-        long userId = Utils.generateUserId();
-        log.info("Generated user_id for user is {}", userId);
-        user.setId(userId);
+        user = userDao.addUser(user);
 
-        return userDao.addUser(user);
+        return user;
     }
 
     @Override

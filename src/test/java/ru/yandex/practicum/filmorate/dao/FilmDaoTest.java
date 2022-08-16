@@ -44,7 +44,6 @@ public class FilmDaoTest {
     @Test
     void addFilmTest() {
         Film film = Film.builder()
-                        .withId(4)
                         .withName("Test")
                         .withDescription("Test")
                         .withDuration(100)
@@ -52,7 +51,7 @@ public class FilmDaoTest {
                         .withMpa(new Mpa(1, "G"))
                         .build();
 
-        filmDao.addFilm(film);
+        film = filmDao.addFilm(film);
 
         Film addedFilm = filmDao.getFilmById(film.getId());
 
@@ -69,7 +68,7 @@ public class FilmDaoTest {
     @Test
     void updateFilm() {
         Film film = Film.builder()
-                        .withId(4)
+                        .withId(2)
                         .withName("Test update")
                         .withDescription("Description update")
                         .withDuration(101)
@@ -79,10 +78,10 @@ public class FilmDaoTest {
 
         filmDao.updateFilm(film);
 
-        Film updatedFilm = filmDao.getFilmById(4);
+        Film updatedFilm = filmDao.getFilmById(2);
 
         Assertions.assertNotNull(updatedFilm);
-        Assertions.assertEquals( 4, updatedFilm.getId());
+        Assertions.assertEquals( 2, updatedFilm.getId());
         Assertions.assertEquals("Test update", updatedFilm.getName());
         Assertions.assertEquals("Description update", updatedFilm.getDescription());
         Assertions.assertEquals( 101, updatedFilm.getDuration());
