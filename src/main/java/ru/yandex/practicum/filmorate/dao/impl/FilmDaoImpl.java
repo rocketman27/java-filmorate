@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
@@ -25,18 +26,14 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public void addFilm(Film film) {
-        String sqlQuery =
-                "INSERT INTO films(film_id, name, description, release_date, duration, mpa_id) " +
-                        "VALUES (?, ?, ?, ?, ?, ?)";
+    public Film addFilm(Film film) {
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("films")
+                .usingGeneratedKeyColumns("film_id");
 
-        jdbcTemplate.update(sqlQuery,
-                film.getId(),
-                film.getName(),
-                film.getDescription(),
-                film.getReleaseDate(),
-                film.getDuration(),
-                film.getMpa().getId());
+        long filmId = simpleJdbcInsert.executeAndReturnKey(film.toMap()).longValue();
+        film.setId(filmId);
+        return film;
     }
 
     @Override

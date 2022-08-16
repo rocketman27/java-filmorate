@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
@@ -25,15 +26,12 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User addUser(User user) {
-        String sqlQuery = "INSERT INTO users(user_id, email, login, name, birthday_date) VALUES (?, ?, ?, ?, ?)";
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("users")
+                .usingGeneratedKeyColumns("user_id");
 
-        jdbcTemplate.update(sqlQuery,
-                user.getId(),
-                user.getEmail(),
-                user.getLogin(),
-                user.getName(),
-                user.getBirthday());
-
+        long filmId = simpleJdbcInsert.executeAndReturnKey(user.toMap()).longValue();
+        user.setId(filmId);
         return user;
     }
 
