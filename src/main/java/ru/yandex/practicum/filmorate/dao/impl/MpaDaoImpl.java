@@ -42,6 +42,6 @@ public class MpaDaoImpl implements MpaDao {
 
     private Mpa mapRowToMpa(ResultSet resultSet, int rowNum) throws SQLException {
         return new Mpa(resultSet.getLong("mpa_id"),
-                resultSet.getString("mpa_name"));
+                resultSet.getString("name"));
     }
 }

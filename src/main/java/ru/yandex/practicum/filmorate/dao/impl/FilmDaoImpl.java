@@ -39,7 +39,7 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public List<Film> getFilms() {
         String sqlQuery =
-                "SELECT f.film_id, f.name, f.description, f.release_date, f.duration, f.mpa_id, m.mpa_name " +
+                "SELECT f.film_id, f.name, f.description, f.release_date, f.duration, f.mpa_id, m.name AS mpa_name " +
                         "FROM films f " +
                         "JOIN mpa m on f.mpa_id = m.mpa_id";
 
@@ -49,7 +49,7 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public Film getFilmById(long id) {
         String sqlQuery =
-                "SELECT f.film_id, f.name, f.description, f.release_date, f.duration, f.mpa_id, m.mpa_name " +
+                "SELECT f.film_id, f.name, f.description, f.release_date, f.duration, f.mpa_id, m.name AS mpa_name " +
                         "FROM films f " +
                         "JOIN mpa m on f.mpa_id = m.mpa_id " +
                         "WHERE film_id = ?";
@@ -63,9 +63,9 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public List<Film> getPopularFilms(int limit) {
         String sqlQuery =
-                "SELECT f.*, m.mpa_name " +
+                "SELECT f.*, m.name AS mpa_name " +
                         "FROM films f " +
-                        "LEFT JOIN users_likes ul ON f.film_id = ul.film_id " +
+                        "LEFT JOIN likes ul ON f.film_id = ul.film_id " +
                         "JOIN mpa m ON f.mpa_id = m.MPA_ID " +
                         "GROUP BY f.film_id " +
                         "ORDER BY COUNT(ul.user_id) DESC " +
@@ -96,16 +96,47 @@ public class FilmDaoImpl implements FilmDao {
         }
     }
 
+    @Override
+    public List<Film> getFilmsByDirectorId(long directorId, String sortBy) {
+        String sortByLikesSql = "SELECT f.film_id, f.name, f.description, f.release_date, f.duration, f.mpa_id, " +
+                " m.name AS mpa_name, " +
+                " count(f.film_id) AS likes_count" +
+                " FROM films as f" +
+                " INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id" +
+                " INNER JOIN films_directors AS fd ON f.film_id = fd.film_id" +
+                " LEFT JOIN likes AS l ON f.film_id = l.film_id" +
+                " WHERE fd.director_id = ?" +
+                " GROUP BY f.film_id" +
+                " ORDER by likes_count DESC;";
+        String sortByYearSql = "SELECT f.film_id, f.name, f.description, f.release_date, f.duration, f.mpa_id, " +
+                "m.name AS mpa_name" +
+                " FROM films as f" +
+                " INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id" +
+                " INNER JOIN films_directors AS fd ON f.film_id = fd.film_id" +
+                " WHERE fd.director_id = ?" +
+                " ORDER by f.release_date;";
+
+        String sql = sortByLikesSql;
+        switch (sortBy) {
+            case "likes":
+                break;
+            case "year":
+                sql = sortByYearSql;
+        }
+
+        return jdbcTemplate.query(sql, this::mapRowToFilm, directorId);
+    }
+
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
         return Film.builder()
-                   .withId(resultSet.getLong("film_id"))
-                   .withName(resultSet.getString("name"))
-                   .withDescription(resultSet.getString("description"))
-                   .withReleaseDate(resultSet.getDate("release_date").toLocalDate())
-                   .withDuration(resultSet.getInt("duration"))
-                   .withMpa(new Mpa(
-                           resultSet.getInt("mpa_id"),
-                           resultSet.getString("mpa_name")))
-                   .build();
+                .withId(resultSet.getLong("film_id"))
+                .withName(resultSet.getString("name"))
+                .withDescription(resultSet.getString("description"))
+                .withReleaseDate(resultSet.getDate("release_date").toLocalDate())
+                .withDuration(resultSet.getInt("duration"))
+                .withMpa(new Mpa(
+                        resultSet.getInt("mpa_id"),
+                        resultSet.getString("mpa_name")))
+                .build();
     }
 }
