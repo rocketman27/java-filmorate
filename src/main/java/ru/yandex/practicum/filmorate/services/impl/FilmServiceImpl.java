@@ -1,15 +1,14 @@
-package ru.yandex.practicum.filmorate.services;
+package ru.yandex.practicum.filmorate.services.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dao.FilmDao;
-import ru.yandex.practicum.filmorate.dao.GenresDao;
-import ru.yandex.practicum.filmorate.dao.LikesDao;
-import ru.yandex.practicum.filmorate.dao.MpaDao;
+import ru.yandex.practicum.filmorate.dao.*;
 import ru.yandex.practicum.filmorate.models.Film;
 import ru.yandex.practicum.filmorate.models.Genre;
 import ru.yandex.practicum.filmorate.models.Mpa;
+import ru.yandex.practicum.filmorate.services.FilmService;
 import ru.yandex.practicum.filmorate.utils.Utils;
 
 import java.util.ArrayList;
@@ -26,13 +25,15 @@ public class FilmServiceImpl implements FilmService {
     private final MpaDao mpaDao;
     private final GenresDao genresDao;
     private final LikesDao likesDao;
+    private final UserDao userDao;
 
     @Autowired
-    public FilmServiceImpl(FilmDao filmDao, MpaDao mpaDao, GenresDao genresDao, LikesDao likesDao) {
+    public FilmServiceImpl(FilmDao filmDao, MpaDao mpaDao, GenresDao genresDao, LikesDao likesDao, UserDao userDao) {
         this.filmDao = filmDao;
         this.mpaDao = mpaDao;
         this.genresDao = genresDao;
         this.likesDao = likesDao;
+        this.userDao = userDao;
     }
 
     @Override
@@ -77,6 +78,12 @@ public class FilmServiceImpl implements FilmService {
     public List<Film> getPopularFilms(int count) {
         log.info("Received request to get a list of popular films");
         return filmDao.getPopularFilms(count);
+    }
+
+    @Override
+    public List<Film> getCommonFilms(int userId, int friendId) {
+        log.info("Received request to get a list of common movies of users with ID " + userId + " and " + friendId);
+        return filmDao.getCommonFilms(userId, friendId);
     }
 
     @Override

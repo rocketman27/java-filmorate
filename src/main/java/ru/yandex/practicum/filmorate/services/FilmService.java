@@ -13,6 +13,8 @@ public interface FilmService {
 
     List<Film> getPopularFilms(int count);
 
+    List<Film> getCommonFilms(int userId, int friendId);
+
     Film updateFilm(Film film);
 
     void addLike(long filmId, long userId);
