@@ -1,3 +1,17 @@
+/*drop table IF EXISTS FILMS_GENRES;
+
+drop table IF EXISTS USERS_LIKES;
+
+drop table IF EXISTS FILMS;
+
+drop table IF EXISTS FRIENDS;
+
+drop table IF EXISTS GENRES;
+
+drop table IF EXISTS MPA;
+
+drop table IF EXISTS USERS;*/
+
 create table if not exists MPA
 (
     MPA_ID      BIGINT auto_increment,
