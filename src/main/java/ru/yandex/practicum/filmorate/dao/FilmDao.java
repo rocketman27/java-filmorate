@@ -14,4 +14,6 @@ public interface FilmDao {
     List<Film> getPopularFilms(int limit);
 
     void updateFilm(Film film);
+
+    List<Film> getDirectorFilms(long directorId, String sortBy);
 }

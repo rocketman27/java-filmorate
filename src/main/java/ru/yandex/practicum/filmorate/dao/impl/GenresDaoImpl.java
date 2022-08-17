@@ -7,11 +7,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.GenresDao;
 import ru.yandex.practicum.filmorate.exceptions.GenreNotFoundException;
-import ru.yandex.practicum.filmorate.models.Film;
 import ru.yandex.practicum.filmorate.models.Genre;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 @Slf4j
@@ -25,21 +25,24 @@ public class GenresDaoImpl implements GenresDao {
     }
 
     @Override
-    public void addGenresForFilm(Film film) {
-        if (film.getGenres() != null) {
-            String sqlQuery = "INSERT INTO FILMS_GENRES(film_id, genre_id) VALUES (?, ?)";
-
-            film.getGenres().forEach(genre -> jdbcTemplate.update(sqlQuery, film.getId(), genre.getId()));
-            log.info("Genres for film with film_id={} have been added", film.getId());
-        } else {
-            log.info("Cannot set up a genre for filmId={}, genres is null", film.getId());
+    public boolean addGenresForFilm(long filmId, Collection<Genre> genres) {
+        if (genres == null || genres.size() == 0) {
+            log.info("Cannot set up a genre for filmId={}, genres is empty", filmId);
+            return false;
         }
+        String sqlQuery = "INSERT INTO FILMS_GENRES(film_id, genre_id) VALUES (?, ?)";
+
+        genres.forEach(genre -> jdbcTemplate.update(sqlQuery, filmId, genre.getId()));
+        log.info("Genres for film with film_id={} have been added", filmId);
+        return true;
     }
 
     @Override
-    public List<Long> getGenresByFilmId(long filmId) {
-        String sqlQuery = "SELECT genre_id FROM films_genres WHERE film_id = ? ORDER BY genre_id";
-        return jdbcTemplate.queryForList(sqlQuery, Long.class, filmId);
+    public List<Genre> getGenresByFilmId(long filmId) {
+        String sqlQuery = "SELECT DISTINCT g.genre_id, g.name FROM genres AS g" +
+                " INNER JOIN films_genres AS fg ON g.genre_id = fg.genre_id" +
+                " WHERE film_id = ? ORDER BY genre_id";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToGenre, filmId);
     }
 
     @Override
@@ -73,6 +76,6 @@ public class GenresDaoImpl implements GenresDao {
 
     private Genre mapRowToGenre(ResultSet resultSet, int rowNum) throws SQLException {
         return new Genre(resultSet.getLong("genre_id"),
-                resultSet.getString("genre_name"));
+                resultSet.getString("name"));
     }
 }

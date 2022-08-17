@@ -3,10 +3,9 @@ package ru.yandex.practicum.filmorate.services;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dao.FilmDao;
-import ru.yandex.practicum.filmorate.dao.GenresDao;
-import ru.yandex.practicum.filmorate.dao.LikesDao;
-import ru.yandex.practicum.filmorate.dao.MpaDao;
+import ru.yandex.practicum.filmorate.dao.*;
+import ru.yandex.practicum.filmorate.exceptions.DirectorNotFoundException;
+import ru.yandex.practicum.filmorate.models.Director;
 import ru.yandex.practicum.filmorate.models.Film;
 import ru.yandex.practicum.filmorate.models.Genre;
 import ru.yandex.practicum.filmorate.models.Mpa;
@@ -26,17 +25,24 @@ public class FilmServiceImpl implements FilmService {
     private final MpaDao mpaDao;
     private final GenresDao genresDao;
     private final LikesDao likesDao;
+    private final DirectorDao directorDao;
 
     @Autowired
-    public FilmServiceImpl(FilmDao filmDao, MpaDao mpaDao, GenresDao genresDao, LikesDao likesDao) {
+    public FilmServiceImpl(FilmDao filmDao, MpaDao mpaDao,
+                           GenresDao genresDao, LikesDao likesDao, DirectorDao directorDao) {
         this.filmDao = filmDao;
         this.mpaDao = mpaDao;
         this.genresDao = genresDao;
         this.likesDao = likesDao;
+        this.directorDao = directorDao;
     }
 
     @Override
     public Film addFilm(Film film) {
+        if (film == null) {
+            log.warn("Received request to update the film=null");
+            return null;
+        }
         log.info("Received request to add film with id={}", film.getId());
 
         Mpa mpa = mpaDao.getMpaById(film.getMpa()
@@ -44,49 +50,77 @@ public class FilmServiceImpl implements FilmService {
         film.setMpa(mpa);
 
         film = filmDao.addFilm(film);
-        genresDao.addGenresForFilm(film);
+        genresDao.addGenresForFilm(film.getId(), film.getGenres());
+        directorDao.addDirectorsForFilm(film.getId(), film.getDirectors());
         log.info("Film with id={} has been successfully added", film.getId());
+        return film;
+    }
+
+    @Override
+    public Film updateFilm(Film film) {
+        if (film == null) {
+            log.warn("Received request to update the film=null");
+            return null;
+        }
+        log.info("Received request to update the film with id={}", film.getId());
+        filmDao.updateFilm(film);
+        genresDao.deleteGenresForFilm(film.getId());
+        genresDao.addGenresForFilm(film.getId(), film.getGenres());
+        directorDao.deleteDirectorsForFilm(film.getId());
+        directorDao.addDirectorsForFilm(film.getId(), film.getDirectors());
         return film;
     }
 
     @Override
     public List<Film> getFilms() {
         log.info("Received request to get all the films");
-        return filmDao.getFilms();
+        List<Film> films = filmDao.getFilms();
+        films.forEach(f -> {
+            f.setGenres(genresDao.getGenresByFilmId(f.getId()));
+            f.setDirectors(directorDao.getDirectorsByFilmId(f.getId()));
+        });
+        return films;
     }
 
     @Override
-    public Film getFilmById(long id) {
-        log.info("Received request to get the film with id={}", id);
-        Film film = filmDao.getFilmById(id);
+    public Film getFilmById(long filmId) {
+        log.info("Received request to get the film with id={}", filmId);
+        Film film = filmDao.getFilmById(filmId);
         long mpaId = film.getMpa().getId();
         Mpa mpa = mpaDao.getMpaById(mpaId);
 
         film.setMpa(mpa);
 
-        List<Long> genresIds = genresDao.getGenresByFilmId(id);
-        List<Genre> genres = genresIds.stream()
-                                      .map(genresDao::getGenreById)
-                                      .collect(Collectors.toList());
-
+        List<Genre> genres = genresDao.getGenresByFilmId(filmId);
         film.setGenres(genres);
+        film.setDirectors(directorDao.getDirectorsByFilmId(filmId));
         return film;
     }
 
     @Override
     public List<Film> getPopularFilms(int count) {
         log.info("Received request to get a list of popular films");
-        return filmDao.getPopularFilms(count);
+        List<Film> films = filmDao.getPopularFilms(count);
+        films.forEach(f -> {
+            f.setGenres(genresDao.getGenresByFilmId(f.getId()));
+            f.setDirectors(directorDao.getDirectorsByFilmId(f.getId()));
+        });
+        return films;
     }
 
     @Override
-    public Film updateFilm(Film film) {
-        log.info("Received request to update the film with id={}", film.getId());
-        filmDao.updateFilm(film);
-        genresDao.deleteGenresForFilm(film.getId());
-        removeGenreDuplicates(film);
-        genresDao.addGenresForFilm(film);
-        return film;
+    public List<Film> getDirectorFilms(long directorId, String sortBy) {
+        log.info("Received request to get a list of films whit director_id={} and sort by {}",
+                directorId, sortBy);
+        if (directorDao.getDirectorById(directorId) == null) {
+            throw new DirectorNotFoundException(String.format("Director with id=%s doesn't exist", directorId));
+        }
+        List<Film> films = filmDao.getDirectorFilms(directorId, sortBy);
+        films.forEach(f -> {
+            f.setGenres(genresDao.getGenresByFilmId(f.getId()));
+            f.setDirectors(directorDao.getDirectorsByFilmId(f.getId()));
+        });
+        return films;
     }
 
     @Override
@@ -99,13 +133,5 @@ public class FilmServiceImpl implements FilmService {
     public void deleteLike(long filmId, long userId) {
         log.info("Received request to delete a like by userId={}, for filmId={}", userId, filmId);
         likesDao.deleteLike(userId, filmId);
-    }
-
-    private void removeGenreDuplicates(Film film) {
-        if (film.getGenres() != null) {
-            Set<Genre> uniqueGenres = new TreeSet<>(Comparator.comparing(Genre::getId));
-            uniqueGenres.addAll(film.getGenres());
-            film.setGenres(new ArrayList<>(uniqueGenres));
-        }
     }
 }

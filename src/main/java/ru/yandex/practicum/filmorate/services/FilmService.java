@@ -18,4 +18,6 @@ public interface FilmService {
     void addLike(long filmId, long userId);
 
     void deleteLike(long filmId, long userId);
+
+    List<Film> getDirectorFilms(long directorId, String sortBy);
 }

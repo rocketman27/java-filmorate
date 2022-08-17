@@ -1,19 +1,19 @@
 create table if not exists MPA
 (
-    MPA_ID      INTEGER auto_increment,
-    MPA_NAME    CHARACTER VARYING not null,
+    MPA_ID      BIGINT auto_increment,
+    NAME    CHARACTER VARYING(20) not null,
     constraint PK_RATINGS
         primary key (MPA_ID)
 );
 
 create table if not exists FILMS
 (
-    FILM_ID      INTEGER auto_increment,
+    FILM_ID      BIGINT auto_increment,
     NAME         CHARACTER VARYING(100) not null,
     DESCRIPTION  CHARACTER VARYING(200),
     RELEASE_DATE DATE,
     DURATION     INTEGER,
-    MPA_ID       INTEGER,
+    MPA_ID       BIGINT,
     constraint PK_FILMS
         primary key (FILM_ID),
     constraint FK_FILMS_MPA
@@ -25,45 +25,57 @@ create unique index if not exists FILMS_NAME_UNQ
 
 create table if not exists GENRES
 (
-    GENRE_ID   INTEGER auto_increment,
-    GENRE_NAME CHARACTER VARYING(20) not null,
+    GENRE_ID   BIGINT auto_increment,
+    NAME CHARACTER VARYING(40) not null,
     constraint PK_GENRES
         primary key (GENRE_ID)
 );
 
 create table if not exists FILMS_GENRES
 (
-    FILM_ID  INTEGER not null,
-    GENRE_ID INTEGER not null,
+    FILM_ID  BIGINT not null,
+    GENRE_ID BIGINT not null,
     constraint PK_FILM_GENRES
         primary key (FILM_ID, GENRE_ID),
     constraint FK_FILMS_GENRES_FILMS
-        foreign key (FILM_ID) references FILMS,
+        foreign key (FILM_ID) references FILMS
+            ON DELETE CASCADE,
     constraint FK_FILMS_GENRES_GENRES
         foreign key (GENRE_ID) references GENRES
+            ON DELETE CASCADE
 );
 
 create unique index if not exists GENRES_GENRE_NAME_UNQ
-    on GENRES (GENRE_NAME);
+    on GENRES (NAME);
 
-/*create table if not exists FILMS_MPA
+create table if not exists DIRECTORS
 (
-    FILM_ID INTEGER not null,
-    MPA_ID  INTEGER not null,
-    constraint PK_FILMS_RATINGS
-        primary key (FILM_ID, MPA_ID),
-    constraint FK_FILMS_RATINGS_FILMS
-        foreign key (FILM_ID) references FILMS,
-    constraint FK_FILMS_RATINGS_RATINGS
-        foreign key (MPA_ID) references MPA
-);*/
+    DIRECTOR_ID   BIGINT auto_increment,
+    NAME CHARACTER VARYING(200) not null,
+    constraint PK_DIRECTORS
+        primary key (DIRECTOR_ID)
+);
+
+create table if not exists FILMS_DIRECTORS
+(
+    FILM_ID BIGINT not null,
+    DIRECTOR_ID   BIGINT not null,
+    constraint PK_FILMS_DIRECTORS
+        primary key (FILM_ID, DIRECTOR_ID),
+    constraint FK_FILMS_DIRECTORS_FILMS
+        foreign key (FILM_ID) references FILMS
+            ON DELETE CASCADE,
+    constraint FK_FILMS_DIRECTORS_DIRECTORS
+        foreign key (DIRECTOR_ID) references DIRECTORS
+            ON DELETE CASCADE
+);
 
 create table if not exists USERS
 (
-    USER_ID       INTEGER auto_increment,
-    EMAIL         CHARACTER VARYING(50) not null,
+    USER_ID       BIGINT auto_increment,
+    EMAIL         CHARACTER VARYING(100) not null,
     LOGIN         CHARACTER VARYING(50) not null,
-    NAME          CHARACTER VARYING(50),
+    NAME          CHARACTER VARYING(100),
     BIRTHDAY_DATE DATE,
     constraint USER_ID
         primary key (USER_ID)
@@ -71,15 +83,17 @@ create table if not exists USERS
 
 create table if not exists FRIENDS
 (
-    USER_ID   INTEGER not null,
-    FRIEND_ID INTEGER not null,
+    USER_ID   BIGINT not null,
+    FRIEND_ID BIGINT not null,
     STATUS    BOOLEAN,
     constraint PK_FRIENDS
         primary key (USER_ID, FRIEND_ID),
     constraint FK_FRIENDS_1
-        foreign key (USER_ID) references USERS,
+        foreign key (USER_ID) references USERS
+            ON DELETE CASCADE,
     constraint FK_FRIENDS_2
         foreign key (FRIEND_ID) references USERS
+            ON DELETE CASCADE
 );
 
 create unique index if not exists USERS_EMAIL_UNQ
@@ -88,14 +102,16 @@ create unique index if not exists USERS_EMAIL_UNQ
 create unique index if not exists USERS_LOGIN_UNQ
     on USERS (LOGIN);
 
-create table if not exists USERS_LIKES
+create table if not exists LIKES
 (
-    USER_ID INTEGER not null,
-    FILM_ID INTEGER not null,
+    USER_ID BIGINT not null,
+    FILM_ID BIGINT not null,
     constraint PK_USERS_LIKES
         primary key (USER_ID, FILM_ID),
     constraint FK_USERS_LIKES_FILMS
-        foreign key (FILM_ID) references FILMS,
+        foreign key (FILM_ID) references FILMS
+            ON DELETE CASCADE,
     constraint FK_USERS_LIKES_USERS
         foreign key (USER_ID) references USERS
+            ON DELETE CASCADE
 );
