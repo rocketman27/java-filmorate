@@ -13,6 +13,8 @@ public interface FilmDao {
 
     List<Film> getPopularFilms(int limit);
 
+    List<Film> getCommonFilms(int userId, int friendId);
+
     void updateFilm(Film film);
 
     List<Film> getFilmsByDirectorId(long directorId, String sortBy);

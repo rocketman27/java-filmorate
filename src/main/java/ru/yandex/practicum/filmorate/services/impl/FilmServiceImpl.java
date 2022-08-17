@@ -1,18 +1,20 @@
-package ru.yandex.practicum.filmorate.services;
+package ru.yandex.practicum.filmorate.services.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dao.DirectorDao;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.dao.GenresDao;
 import ru.yandex.practicum.filmorate.dao.LikesDao;
 import ru.yandex.practicum.filmorate.dao.MpaDao;
+import ru.yandex.practicum.filmorate.dao.DirectorDao;
+import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.exceptions.DirectorNotFoundException;
 import ru.yandex.practicum.filmorate.models.Director;
 import ru.yandex.practicum.filmorate.models.Film;
 import ru.yandex.practicum.filmorate.models.Genre;
 import ru.yandex.practicum.filmorate.models.Mpa;
+import ru.yandex.practicum.filmorate.services.FilmService;
 
 import java.util.Collection;
 import java.util.List;
@@ -25,15 +27,17 @@ public class FilmServiceImpl implements FilmService {
     private final GenresDao genresDao;
     private final LikesDao likesDao;
     private final DirectorDao directorDao;
+    private final UserDao userDao;
 
     @Autowired
     public FilmServiceImpl(FilmDao filmDao, MpaDao mpaDao,
-                           GenresDao genresDao, LikesDao likesDao, DirectorDao directorDao) {
+                           GenresDao genresDao, LikesDao likesDao, DirectorDao directorDao, UserDao userDao) {
         this.filmDao = filmDao;
         this.mpaDao = mpaDao;
         this.genresDao = genresDao;
         this.likesDao = likesDao;
         this.directorDao = directorDao;
+        this.userDao = userDao;
     }
 
     @Override
@@ -115,6 +119,19 @@ public class FilmServiceImpl implements FilmService {
     public List<Film> getPopularFilms(int count) {
         log.info("Received request to get a list of popular films");
         List<Film> films = filmDao.getPopularFilms(count);
+        films.forEach(f -> {
+            f.setGenres(genresDao.getGenresByFilmId(f.getId()));
+            f.setDirectors(directorDao.getDirectorsByFilmId(f.getId()));
+        });
+        return films;
+    }
+
+    @Override
+    public List<Film> getCommonFilms(int userId, int friendId) {
+        log.info("Received request to get a list of common films of users with ID " + userId + " and " + friendId);
+        userDao.getUserById(userId);
+        userDao.getUserById(friendId);
+        List<Film> films = filmDao.getCommonFilms(userId, friendId);
         films.forEach(f -> {
             f.setGenres(genresDao.getGenresByFilmId(f.getId()));
             f.setDirectors(directorDao.getDirectorsByFilmId(f.getId()));
