@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.models.Film;
 import ru.yandex.practicum.filmorate.models.Mpa;
 
@@ -77,29 +76,25 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public List<Film> getCommonFilms(int userId, int friendId) {
         String sqlQuery =
-                "SELECT F.*, M.MPA_NAME " +
+                "SELECT F.*, M.NAME MPA_NAME " +
                         "FROM FILMS F " +
                         "INNER JOIN MPA M ON F.mpa_id = M.MPA_ID " +
-                        "INNER JOIN USERS_LIKES L on F.FILM_ID = L.FILM_ID " +
+                        "INNER JOIN LIKES L on F.FILM_ID = L.FILM_ID " +
                         "INNER JOIN ( " +
                             "SELECT FILM_ID, " +
                             "COUNT(FILM_ID) COUNT_LIKES " +
-                            "FROM USERS_LIKES " +
+                            "FROM LIKES " +
                             "GROUP BY FILM_ID " +
                         ") AS FILM_LIKE ON F.FILM_ID = FILM_LIKE.FILM_ID " +
                         "WHERE USER_ID = ? " +
                         "AND L.FILM_ID IN ( " +
-                            "SELECT USERS_LIKES.FILM_ID " +
-                            "FROM USERS_LIKES " +
+                            "SELECT LIKES.FILM_ID " +
+                            "FROM LIKES " +
                             "WHERE USER_ID = ? " +
                         ") " +
                         "GROUP BY F.FILM_ID " +
                         "ORDER BY FILM_LIKE.COUNT_LIKES DESC";
-        try {
-            return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, userId, friendId);
-        } catch (EmptyResultDataAccessException e) {
-            throw new UserNotFoundException(String.format("User with id=%s or id=%s doesn't exist", userId, friendId));
-        }
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, userId, friendId);
     }
 
     @Override
