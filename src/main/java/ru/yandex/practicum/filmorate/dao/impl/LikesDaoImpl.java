@@ -21,7 +21,7 @@ public class LikesDaoImpl implements LikesDao {
 
     @Override
     public void addLike(long userId, long filmId) throws RuntimeException {
-        String sqlQuery = "INSERT INTO USERS_LIKES(user_id, film_id) VALUES (?, ?)";
+        String sqlQuery = "INSERT INTO LIKES(user_id, film_id) VALUES (?, ?)";
         try {
             jdbcTemplate.update(sqlQuery, userId, filmId);
             log.info("Like by userId={}, filmId={} has been inserted", userId, filmId);
@@ -32,7 +32,7 @@ public class LikesDaoImpl implements LikesDao {
 
     @Override
     public void deleteLike(long userId, long filmId) {
-        String sqlQuery = "DELETE FROM users_likes WHERE user_id = ? AND film_id = ?";
+        String sqlQuery = "DELETE FROM likes WHERE user_id = ? AND film_id = ?";
 
         int rowsDeleted = jdbcTemplate.update(sqlQuery, userId, filmId);
 

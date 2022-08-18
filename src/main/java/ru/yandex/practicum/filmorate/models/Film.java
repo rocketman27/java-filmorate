@@ -9,9 +9,11 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 @Data
 @Builder(setterPrefix = "with")
@@ -27,7 +29,18 @@ public class Film {
     private int duration;
     @NotNull
     private Mpa mpa;
-    private List<Genre> genres;
+    private final Set<Genre> genres = new LinkedHashSet<>();
+    private final Set<Director> directors = new LinkedHashSet<>();
+
+    public void setGenres(Collection<Genre> genres) {
+        this.genres.clear();
+        this.genres.addAll(genres);
+    }
+
+    public void setDirectors(Collection<Director> directors) {
+        this.directors.clear();
+        this.directors.addAll(directors);
+    }
 
     public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();
