@@ -116,9 +116,27 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<Film> getPopularFilms(int count) {
-        log.info("Received request to get a list of popular films");
-        List<Film> films = filmDao.getPopularFilms(count);
+    public List<Film> getPopularFilms(int count, Long genreId, Integer year) {
+        List<Film> films;
+        if (genreId == null) {
+            if (year == null) {
+                log.info("Received request to get a list of popular films");
+                films =  filmDao.getPopularFilms(count);
+            } else {
+                log.info("Received request to get a list of popular films for year={}-th", year);
+                films =  filmDao.getPopularFilmsByYear(count, year);
+            }
+        } else {
+            genresDao.getGenreById(genreId);
+            if (year == null) {
+                log.info("Received request to get a list of popular films with genre id={}", genreId);
+                films =  filmDao.getPopularFilmsByGenre(count, genreId);
+            } else {
+                log.info("Received request to get a list of popular films for year={}-th with genre id={}",
+                        year, genreId);
+                films =  filmDao.getPopularFilms(count, genreId, year);
+            }
+        }
         films.forEach(f -> {
             f.setGenres(genresDao.getGenresByFilmId(f.getId()));
             f.setDirectors(directorDao.getDirectorsByFilmId(f.getId()));

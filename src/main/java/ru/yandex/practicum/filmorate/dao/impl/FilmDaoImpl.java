@@ -74,6 +74,57 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
+    public List<Film> getPopularFilmsByGenre(int limit, long genreId) {
+        String sqlQuery =
+                "SELECT F.*, M.NAME MPA_NAME " +
+                        "FROM FILMS F " +
+                        "LEFT JOIN LIKES L on F.FILM_ID = L.FILM_ID " +
+                        "INNER JOIN MPA M on F.MPA_ID = M.MPA_ID " +
+                        "INNER JOIN ( " +
+                            "SELECT FILM_ID " +
+                            "FROM FILMS_GENRES " +
+                            "WHERE GENRE_ID = ? " +
+                        ") AS FILMS_BY_GENRE on F.FILM_ID = FILMS_BY_GENRE.FILM_ID " +
+                        "GROUP BY F.FILM_ID " +
+                        "ORDER BY COUNT(L.FILM_ID) DESC " +
+                        "LIMIT ?";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, genreId, limit);
+    }
+
+    @Override
+    public List<Film> getPopularFilmsByYear(int limit, int year) {
+        String sqlQuery =
+                "SELECT F.*, M.NAME MPA_NAME " +
+                        "FROM FILMS F " +
+                        "LEFT JOIN LIKES L on F.FILM_ID = L.FILM_ID " +
+                        "INNER JOIN MPA M on F.MPA_ID = M.MPA_ID " +
+                        "WHERE EXTRACT(YEAR FROM F.RELEASE_DATE) = ? " +
+                        "GROUP BY F.FILM_ID " +
+                        "ORDER BY COUNT(L.FILM_ID) DESC " +
+                        "LIMIT ?";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, year, limit);
+    }
+
+    @Override
+    public List<Film> getPopularFilms(int limit, long genreId, int year) {
+        String sqlQuery =
+                "SELECT F.*, M.NAME MPA_NAME " +
+                        "FROM FILMS F " +
+                        "LEFT JOIN LIKES L on F.FILM_ID = L.FILM_ID " +
+                        "INNER JOIN MPA M on F.MPA_ID = M.MPA_ID " +
+                        "INNER JOIN ( " +
+                            "SELECT FILM_ID " +
+                            "FROM FILMS_GENRES " +
+                            "WHERE GENRE_ID = ? " +
+                        ") AS FILMS_BY_GENRE on F.FILM_ID = FILMS_BY_GENRE.FILM_ID " +
+                        "WHERE EXTRACT(YEAR FROM F.RELEASE_DATE) = ? " +
+                        "GROUP BY F.FILM_ID " +
+                        "ORDER BY COUNT(L.FILM_ID) DESC " +
+                        "LIMIT ?";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, genreId, year, limit);
+    }
+
+    @Override
     public List<Film> getCommonFilms(int userId, int friendId) {
         String sqlQuery =
                 "SELECT F.*, M.NAME MPA_NAME " +
