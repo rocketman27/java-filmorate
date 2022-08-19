@@ -98,7 +98,7 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public void updateFilm(Film film) {
+    public Film updateFilm(Film film) {
         String sqlQuery =
                 "UPDATE films " +
                         "SET film_id = ?, name = ?, description = ?, release_date = ?, duration = ?, mpa_id = ? " +
@@ -118,6 +118,7 @@ public class FilmDaoImpl implements FilmDao {
         } else {
             throw new FilmNotFoundException(String.format("Film with film_id=%s doesn't exist", film.getId()));
         }
+        return film;
     }
 
     @Override
