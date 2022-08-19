@@ -74,6 +74,30 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
+    public List<Film> getCommonFilms(int userId, int friendId) {
+        String sqlQuery =
+                "SELECT F.*, M.NAME MPA_NAME " +
+                        "FROM FILMS F " +
+                        "INNER JOIN MPA M ON F.mpa_id = M.MPA_ID " +
+                        "INNER JOIN LIKES L on F.FILM_ID = L.FILM_ID " +
+                        "INNER JOIN ( " +
+                            "SELECT FILM_ID, " +
+                            "COUNT(FILM_ID) COUNT_LIKES " +
+                            "FROM LIKES " +
+                            "GROUP BY FILM_ID " +
+                        ") AS FILM_LIKE ON F.FILM_ID = FILM_LIKE.FILM_ID " +
+                        "WHERE USER_ID = ? " +
+                        "AND L.FILM_ID IN ( " +
+                            "SELECT LIKES.FILM_ID " +
+                            "FROM LIKES " +
+                            "WHERE USER_ID = ? " +
+                        ") " +
+                        "GROUP BY F.FILM_ID " +
+                        "ORDER BY FILM_LIKE.COUNT_LIKES DESC";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, userId, friendId);
+    }
+
+    @Override
     public void updateFilm(Film film) {
         String sqlQuery =
                 "UPDATE films " +
