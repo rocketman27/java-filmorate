@@ -13,6 +13,12 @@ public interface FilmDao {
 
     List<Film> getPopularFilms(int limit);
 
+    List<Film> getPopularFilmsByGenre(int limit, long genreId);
+
+    List<Film> getPopularFilmsByYear(int limit, int year);
+
+    List<Film> getPopularFilms(int limit, long genreId, int year);
+
     List<Film> getCommonFilms(int userId, int friendId);
 
     Film updateFilm(Film film);
