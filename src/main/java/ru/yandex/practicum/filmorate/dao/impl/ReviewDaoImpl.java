@@ -51,15 +51,12 @@ public class ReviewDaoImpl implements ReviewDao {
     @Override
     public Review updateReview(Review review) {
         String sqlQuery = "UPDATE REVIEWS " +
-                "SET CONTENT = ?, IS_POSITIVE = ?, USEFUL = ?, FILM_ID = ?, AUTHOR_ID = ? " +
+                "SET CONTENT = ?, IS_POSITIVE = ?" +
                 "WHERE REVIEW_ID = ?";
 
         int rowsUpdated = jdbcTemplate.update(sqlQuery,
                 review.getContent(),
                 review.getIsPositive(),
-                review.getUseful(),
-                review.getFilmId(),
-                review.getUserId(),
                 review.getReviewId());
 
         if (rowsUpdated == 1) {
