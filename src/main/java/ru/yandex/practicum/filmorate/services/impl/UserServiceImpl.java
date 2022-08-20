@@ -3,9 +3,13 @@ package ru.yandex.practicum.filmorate.services.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dao.FriendsDao;
 import ru.yandex.practicum.filmorate.dao.UserDao;
+import ru.yandex.practicum.filmorate.dao.FriendsDao;
+import ru.yandex.practicum.filmorate.dao.FilmDao;
+import ru.yandex.practicum.filmorate.dao.GenresDao;
+import ru.yandex.practicum.filmorate.dao.DirectorDao;
 import ru.yandex.practicum.filmorate.models.User;
+import ru.yandex.practicum.filmorate.models.Film;
 import ru.yandex.practicum.filmorate.services.UserService;
 
 import java.util.ArrayList;
@@ -17,11 +21,21 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserDao userDao;
     private final FriendsDao friendsDao;
+    private final FilmDao filmDao;
+    private final GenresDao genresDao;
+    private final DirectorDao directorDao;
 
     @Autowired
-    public UserServiceImpl(UserDao userDao, FriendsDao friendsDao) {
+    public UserServiceImpl(UserDao userDao,
+                           FriendsDao friendsDao,
+                           FilmDao filmDao,
+                           GenresDao genresDao,
+                           DirectorDao directorDao) {
         this.userDao = userDao;
         this.friendsDao = friendsDao;
+        this.filmDao = filmDao;
+        this.genresDao = genresDao;
+        this.directorDao = directorDao;
     }
 
     @Override
@@ -90,6 +104,18 @@ public class UserServiceImpl implements UserService {
         userFriends.retainAll(otherUserFriends);
 
         return userFriends;
+    }
+
+    @Override
+    public List<Film> getRecommendation(long userId) {
+        log.info("Received request to get a list of recommendation films for userId={}", userId);
+        userDao.getUserById(userId);
+        List<Film> films = filmDao.getRecommendation(userId);
+        films.forEach(f -> {
+            f.setGenres(genresDao.getGenresByFilmId(f.getId()));
+            f.setDirectors(directorDao.getDirectorsByFilmId(f.getId()));
+        });
+        return films;
     }
 
     @Override

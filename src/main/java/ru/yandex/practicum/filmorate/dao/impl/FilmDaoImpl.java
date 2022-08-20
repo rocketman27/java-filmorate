@@ -149,7 +149,34 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public Film updateFilm(Film film) {
+    public List<Film> getRecommendation(long userId) {
+        String sqlQuery =
+                "SELECT F.*, M.NAME MPA_NAME " +
+                        "FROM FILMS F " +
+                        "INNER JOIN MPA M on F.MPA_ID = M.MPA_ID " +
+                        "INNER JOIN LIKES L on F.FILM_ID = L.FILM_ID " +
+                        "WHERE L.USER_ID = ( " +
+                            "SELECT USER_ID " +
+                            "FROM LIKES " +
+                            "WHERE FILM_ID IN ( " +
+                                "SELECT FILM_ID " +
+                                "FROM LIKES " +
+                                "WHERE USER_ID = ? " +
+                            ") " +
+                            "AND USER_ID <> ? " +
+                            "GROUP BY USER_ID " +
+                            "ORDER BY COUNT(FILM_ID) DESC " +
+                            "LIMIT 1 " +
+                        ") " +
+                        "AND L.FILM_ID NOT IN ( " +
+                            "SELECT FILM_ID " +
+                            "FROM LIKES " +
+                            "WHERE USER_ID = ?)";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, userId, userId, userId);
+    }
+
+    @Override
+    public void updateFilm(Film film) {
         String sqlQuery =
                 "UPDATE films " +
                         "SET film_id = ?, name = ?, description = ?, release_date = ?, duration = ?, mpa_id = ? " +
@@ -169,7 +196,6 @@ public class FilmDaoImpl implements FilmDao {
         } else {
             throw new FilmNotFoundException(String.format("Film with film_id=%s doesn't exist", film.getId()));
         }
-        return film;
     }
 
     @Override
