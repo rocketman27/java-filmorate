@@ -11,7 +11,7 @@ public interface FilmService {
 
     Film getFilmById(long id);
 
-    List<Film> getPopularFilms(int count);
+    List<Film> getPopularFilms(int count, Long genreId, Integer year);
 
     List<Film> getCommonFilms(int userId, int friendId);
 
