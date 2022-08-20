@@ -165,4 +165,10 @@ public class FilmServiceImpl implements FilmService {
         log.info("Received request to delete a like by userId={}, for filmId={}", userId, filmId);
         likesDao.deleteLike(userId, filmId);
     }
+
+    @Override
+    public void removeFilm(long filmId) {
+        log.info("Received request to delete filmId={}", filmId);
+        filmDao.removeFilm(filmId);
+    }
 }

@@ -81,16 +81,16 @@ public class FilmDaoImpl implements FilmDao {
                         "INNER JOIN MPA M ON F.mpa_id = M.MPA_ID " +
                         "INNER JOIN LIKES L on F.FILM_ID = L.FILM_ID " +
                         "INNER JOIN ( " +
-                            "SELECT FILM_ID, " +
-                            "COUNT(FILM_ID) COUNT_LIKES " +
-                            "FROM LIKES " +
-                            "GROUP BY FILM_ID " +
+                        "SELECT FILM_ID, " +
+                        "COUNT(FILM_ID) COUNT_LIKES " +
+                        "FROM LIKES " +
+                        "GROUP BY FILM_ID " +
                         ") AS FILM_LIKE ON F.FILM_ID = FILM_LIKE.FILM_ID " +
                         "WHERE USER_ID = ? " +
                         "AND L.FILM_ID IN ( " +
-                            "SELECT LIKES.FILM_ID " +
-                            "FROM LIKES " +
-                            "WHERE USER_ID = ? " +
+                        "SELECT LIKES.FILM_ID " +
+                        "FROM LIKES " +
+                        "WHERE USER_ID = ? " +
                         ") " +
                         "GROUP BY F.FILM_ID " +
                         "ORDER BY FILM_LIKE.COUNT_LIKES DESC";
@@ -149,6 +149,18 @@ public class FilmDaoImpl implements FilmDao {
         }
 
         return jdbcTemplate.query(sql, this::mapRowToFilm, directorId);
+    }
+
+    @Override
+    public void removeFilm(long filmId) {
+        String sqlQuery = "DELETE FROM films WHERE film_id = ?";
+        int result = jdbcTemplate.update(sqlQuery, filmId);
+        if (result > 0) {
+            log.info("Film with filmId={} has been deleted", filmId);
+        } else {
+            throw new FilmNotFoundException(String.format("Cannot delete film as filmId=%s doesn't exist",
+                    filmId));
+        }
     }
 
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {

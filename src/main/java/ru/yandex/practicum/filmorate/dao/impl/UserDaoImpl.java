@@ -71,13 +71,26 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
+    @Override
+    public void removeUser(long userId) {
+        String sqlQuery = "DELETE FROM users WHERE user_id = ?";
+        int result = jdbcTemplate.update(sqlQuery, userId);
+        if (result > 0) {
+            log.info("User with userId={} has been deleted", userId);
+        } else {
+            throw new UserNotFoundException(String.format("Cannot delete user as userId=%s doesn't exist",
+                    userId));
+        }
+
+    }
+
     private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
         return User.builder()
-                   .withId(resultSet.getLong("user_id"))
-                   .withEmail(resultSet.getString("email"))
-                   .withLogin(resultSet.getString("login"))
-                   .withName(resultSet.getString("name"))
-                   .withBirthday(resultSet.getDate("birthday_date").toLocalDate())
-                   .build();
+                .withId(resultSet.getLong("user_id"))
+                .withEmail(resultSet.getString("email"))
+                .withLogin(resultSet.getString("login"))
+                .withName(resultSet.getString("name"))
+                .withBirthday(resultSet.getDate("birthday_date").toLocalDate())
+                .build();
     }
 }

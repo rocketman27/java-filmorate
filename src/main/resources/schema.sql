@@ -20,9 +20,6 @@ create table if not exists FILMS
         foreign key (MPA_ID) references MPA
 );
 
-create unique index if not exists FILMS_NAME_UNQ
-    on FILMS (NAME);
-
 create table if not exists GENRES
 (
     GENRE_ID   BIGINT auto_increment,
