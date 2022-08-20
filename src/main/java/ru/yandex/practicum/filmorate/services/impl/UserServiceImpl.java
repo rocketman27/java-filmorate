@@ -70,13 +70,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getFriends(long id) {
         log.info("Received request to get a list of friends for userId={}", id);
+        userDao.getUserById(id);
         List<Long> friendsIds = friendsDao.getFriends(id);
         if (friendsIds.isEmpty()) {
             return new ArrayList<>();
         } else {
             return friendsIds.stream()
-                             .map(userDao::getUserById)
-                             .collect(Collectors.toList());
+                    .map(userDao::getUserById)
+                    .collect(Collectors.toList());
         }
     }
 
@@ -89,5 +90,11 @@ public class UserServiceImpl implements UserService {
         userFriends.retainAll(otherUserFriends);
 
         return userFriends;
+    }
+
+    @Override
+    public void removeUser(long id) {
+        log.info("Received request to delete userId={}", id);
+        userDao.removeUser(id);
     }
 }

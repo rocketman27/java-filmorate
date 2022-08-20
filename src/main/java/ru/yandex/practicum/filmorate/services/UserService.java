@@ -20,4 +20,6 @@ public interface UserService {
     List<User> getFriends(long id);
 
     List<User> getMutualFriends(long id, long otherId);
+
+    void removeUser(long userId);
 }

@@ -80,4 +80,9 @@ public class FilmController {
                                            @RequestParam(name = "sortBy") String sortBy) {
         return filmService.getFilmsByDirectorId(directorId, sortBy);
     }
+
+    @DeleteMapping("/{filmId}")
+    public void removeUser(@PathVariable long filmId) {
+        filmService.removeFilm(filmId);
+    }
 }
