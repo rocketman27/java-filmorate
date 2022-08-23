@@ -23,6 +23,7 @@ public class Review {
     private Integer userId;
     @NotNull
     private Integer filmId;
+
     public boolean getIsPositive() {
         return isPositive;
     }
