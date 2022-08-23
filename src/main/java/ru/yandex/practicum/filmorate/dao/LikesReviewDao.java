@@ -6,6 +6,4 @@ public interface LikesReviewDao {
 
     void deleteLikeForReview(long reviewId, long userId, boolean type);
 
-    void deleteLikeForReview(long reviewId);
-
 }

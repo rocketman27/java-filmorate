@@ -6,12 +6,15 @@ import java.util.List;
 
 public interface ReviewDao {
     Review addReview(Review review);
+
     Review updateReview(Review review);
-    List<Review> getReviewByFilmId(long filmId, int count);
+
+    List<Review> getReviewsByFilmId(long filmId, int count);
+
     Review getReviewById(long id);
+
     boolean deleteReview(long id);
-    List<Review> getReviewByFilmId(int count);
-     void incrementUseful(long id);
-     void decrementUseful(long id);
+
+    List<Review> getReviewsByFilmId(int count);
 
 }

@@ -70,13 +70,13 @@ public class ReviewDaoImpl implements ReviewDao {
     }
 
     @Override
-    public List<Review> getReviewByFilmId(long filmId, int count) {
+    public List<Review> getReviewsByFilmId(long filmId, int count) {
         String sqlQuery = "SELECT REVIEW_ID, CONTENT, IS_POSITIVE, USEFUL, FILM_ID, AUTHOR_ID FROM REVIEWS WHERE FILM_ID = ? ORDER BY USEFUL DESC, FILM_ID LIMIT ?";
         return jdbcTemplate.query(sqlQuery, this::mapRowToReview, filmId, count);
     }
 
     @Override
-    public List<Review> getReviewByFilmId(int count) {
+    public List<Review> getReviewsByFilmId(int count) {
         String sqlQuery = "SELECT REVIEW_ID, CONTENT, IS_POSITIVE, USEFUL, FILM_ID, AUTHOR_ID FROM REVIEWS ORDER BY USEFUL DESC, FILM_ID LIMIT ?";
         return jdbcTemplate.query(sqlQuery, this::mapRowToReview, count);
 
@@ -106,15 +106,6 @@ public class ReviewDaoImpl implements ReviewDao {
         return result == 1;
     }
 
-    public void incrementUseful(long id) {
-        String sqlQuery = "UPDATE REVIEWS SET USEFUL=REVIEWS.USEFUL+1 WHERE REVIEW_ID = ? ";
-        jdbcTemplate.update(sqlQuery, id);
-    }
-
-    public void decrementUseful(long id) {
-        String sqlQuery = "UPDATE REVIEWS SET USEFUL=REVIEWS.USEFUL-1 WHERE REVIEW_ID = ? ";
-        jdbcTemplate.update(sqlQuery, id);
-    }
 
     private Review mapRowToReview(ResultSet resultSet, int rowNum) throws SQLException {
         return Review.builder()

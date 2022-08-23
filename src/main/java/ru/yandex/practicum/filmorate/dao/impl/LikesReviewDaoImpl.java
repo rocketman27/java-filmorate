@@ -5,19 +5,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.LikesReviewDao;
-import ru.yandex.practicum.filmorate.dao.ReviewDao;
-
 
 @Slf4j
 @Repository
 public class LikesReviewDaoImpl implements LikesReviewDao {
     private final JdbcTemplate jdbcTemplate;
-    private final ReviewDao reviewDao;
 
     @Autowired
-    public LikesReviewDaoImpl(JdbcTemplate jdbcTemplate, ReviewDao reviewDao) {
+    public LikesReviewDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.reviewDao = reviewDao;
     }
 
     @Override
@@ -26,8 +22,8 @@ public class LikesReviewDaoImpl implements LikesReviewDao {
 
         int updatedRows = jdbcTemplate.update(sqlQuery, reviewId, userId, type);
         if (type == true)
-            reviewDao.incrementUseful(reviewId);
-        else reviewDao.decrementUseful(reviewId);
+            incrementUseful(reviewId);
+        else decrementUseful(reviewId);
         if (updatedRows == 1) {
             log.info("Like for user with id {} from review with id {} was added ", userId, reviewId);
 
@@ -42,8 +38,8 @@ public class LikesReviewDaoImpl implements LikesReviewDao {
 
         int updatedRows = jdbcTemplate.update(sqlQuery, reviewId, userId, type);
         if (type == true)
-            reviewDao.decrementUseful(reviewId);
-        else reviewDao.incrementUseful(reviewId);
+            decrementUseful(reviewId);
+        else incrementUseful(reviewId);
 
         if (updatedRows == 1) {
             log.info("Like user with id {} from review with id {} was delete ", userId, reviewId);
@@ -53,17 +49,13 @@ public class LikesReviewDaoImpl implements LikesReviewDao {
         }
     }
 
-    @Override
-    public void deleteLikeForReview(long reviewId) {
-        String sqlQuery = "DELETE FROM REVIEWS_LIKES WHERE review_id = ?";
+    private void incrementUseful(long id) {
+        String sqlQuery = "UPDATE REVIEWS SET USEFUL=REVIEWS.USEFUL+1 WHERE REVIEW_ID = ? ";
+        jdbcTemplate.update(sqlQuery, id);
+    }
 
-        int updatedRows = jdbcTemplate.update(sqlQuery, reviewId);
-
-        if (updatedRows == 1) {
-            log.info("Like for user with id {} from review with id {} was delete ", reviewId);
-
-        } else {
-            log.info("Cannot delete like for user with id {} from review with id {} ", reviewId);
-        }
+    public void decrementUseful(long id) {
+        String sqlQuery = "UPDATE REVIEWS SET USEFUL=REVIEWS.USEFUL-1 WHERE REVIEW_ID = ? ";
+        jdbcTemplate.update(sqlQuery, id);
     }
 }
