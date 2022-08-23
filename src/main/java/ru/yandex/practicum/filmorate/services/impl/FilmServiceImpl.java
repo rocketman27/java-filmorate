@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.dao.MpaDao;
 import ru.yandex.practicum.filmorate.dao.DirectorDao;
 import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.exceptions.DirectorNotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.IllegalSearchArgumentException;
 import ru.yandex.practicum.filmorate.models.Director;
 import ru.yandex.practicum.filmorate.models.Film;
 import ru.yandex.practicum.filmorate.models.Genre;
@@ -150,6 +151,26 @@ public class FilmServiceImpl implements FilmService {
         userDao.getUserById(userId);
         userDao.getUserById(friendId);
         List<Film> films = filmDao.getCommonFilms(userId, friendId);
+        films.forEach(f -> {
+            f.setGenres(genresDao.getGenresByFilmId(f.getId()));
+            f.setDirectors(directorDao.getDirectorsByFilmId(f.getId()));
+        });
+        return films;
+    }
+
+    @Override
+    public List<Film> getSearch(String query, List<String> by) {
+        log.info("Received request to get a list films with search parameters query={} by {}", query, by);
+        List<Film> films;
+        if (by.contains("director") && by.contains("title")) {
+            films = filmDao.getSearch(query);
+        } else if (by.contains("director")) {
+            films = filmDao.getSearchByDirector(query);
+        } else if (by.contains("title")) {
+            films = filmDao.getSearchByTitle(query);
+        } else {
+            throw new IllegalSearchArgumentException("Invalid request parameter");
+        }
         films.forEach(f -> {
             f.setGenres(genresDao.getGenresByFilmId(f.getId()));
             f.setDirectors(directorDao.getDirectorsByFilmId(f.getId()));

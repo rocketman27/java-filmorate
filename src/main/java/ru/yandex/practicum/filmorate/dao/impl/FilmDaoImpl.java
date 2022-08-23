@@ -176,6 +176,50 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
+    public List<Film> getSearch(String query) {
+        String sqlQuery =
+                "SELECT F.*, M.NAME MPA_NAME " +
+                        "FROM FILMS F " +
+                        "LEFT JOIN LIKES L ON F.FILM_ID = L.FILM_ID " +
+                        "INNER JOIN MPA M ON F.MPA_ID = M.MPA_ID " +
+                        "LEFT JOIN FILMS_DIRECTORS FD ON F.FILM_ID = FD.FILM_ID " +
+                        "LEFT JOIN DIRECTORS D ON FD.DIRECTOR_ID = D.DIRECTOR_ID " +
+                        "WHERE UPPER(F.NAME) LIKE UPPER(?) " +
+                        "OR UPPER(D.NAME) LIKE UPPER(?) " +
+                        "GROUP BY F.FILM_ID " +
+                        "ORDER BY COUNT(L.FILM_ID) DESC";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, "%" + query + "%", "%" + query + "%");
+    }
+
+    @Override
+    public List<Film> getSearchByDirector(String query) {
+        String sqlQuery =
+                "SELECT F.*, M.NAME MPA_NAME " +
+                        "FROM FILMS F " +
+                        "LEFT JOIN LIKES L ON F.FILM_ID = L.FILM_ID " +
+                        "INNER JOIN MPA M ON F.MPA_ID = M.MPA_ID " +
+                        "LEFT JOIN FILMS_DIRECTORS FD ON F.FILM_ID = FD.FILM_ID " +
+                        "LEFT JOIN DIRECTORS D ON FD.DIRECTOR_ID = D.DIRECTOR_ID " +
+                        "WHERE UPPER(D.NAME) LIKE UPPER(?) " +
+                        "GROUP BY F.FILM_ID " +
+                        "ORDER BY COUNT(L.FILM_ID) DESC";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, "%" + query + "%");
+    }
+
+    @Override
+    public List<Film> getSearchByTitle(String query) {
+        String sqlQuery =
+                "SELECT F.*, M.NAME MPA_NAME " +
+                        "FROM FILMS F " +
+                        "LEFT JOIN LIKES L ON F.FILM_ID = L.FILM_ID " +
+                        "INNER JOIN MPA M ON F.MPA_ID = M.MPA_ID " +
+                        "WHERE UPPER(F.NAME) LIKE UPPER(?) " +
+                        "GROUP BY F.FILM_ID " +
+                        "ORDER BY COUNT(L.FILM_ID) DESC";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, "%" + query + "%");
+    }
+
+    @Override
     public void updateFilm(Film film) {
         String sqlQuery =
                 "UPDATE films " +

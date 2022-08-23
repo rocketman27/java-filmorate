@@ -23,6 +23,12 @@ public interface FilmDao {
 
     List<Film> getRecommendation(long userId);
 
+    List<Film> getSearch(String query);
+
+    List<Film> getSearchByDirector(String query);
+
+    List<Film> getSearchByTitle(String query);
+
     void updateFilm(Film film);
 
     List<Film> getFilmsByDirectorId(long directorId, String sortBy);

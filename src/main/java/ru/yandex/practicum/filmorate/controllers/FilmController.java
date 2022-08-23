@@ -64,6 +64,14 @@ public class FilmController {
         return filmService.getCommonFilms(userId, friendId);
     }
 
+    @GetMapping("/search")
+    public List<Film> getSearch(
+            @RequestParam(value = "query") String query,
+            @RequestParam(value = "by") List<String> by
+    ) {
+        return filmService.getSearch(query, by);
+    }
+
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
         return filmService.updateFilm(film);
