@@ -15,6 +15,8 @@ public interface FilmService {
 
     List<Film> getCommonFilms(int userId, int friendId);
 
+    List<Film> getSearch(String query, List<String> by);
+
     Film updateFilm(Film film);
 
     void addLike(long filmId, long userId);
