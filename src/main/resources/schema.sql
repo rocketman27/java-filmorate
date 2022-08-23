@@ -122,15 +122,18 @@ create table if not exists REVIEWS
     FILM_ID     BIGINT            not null,
     AUTHOR_ID   BIGINT            not null,
     constraint REVIEW_ID primary key (REVIEW_ID),
-    foreign key (FILM_ID) references films (film_id),
+    foreign key (FILM_ID) references films (film_id)
+        ON DELETE CASCADE,
     foreign key (AUTHOR_ID) references USERS (USER_ID)
-
+        ON DELETE CASCADE
 );
-create table if not exists REVIEWS_USERS_LIKES
+create table if not exists REVIEWS_LIKES
 (
     REVIEW_ID   BIGINT  not null,
     USER_ID     BIGINT  not null,
     IS_POSITIVE BOOLEAN not null,
-    foreign key (REVIEW_ID) references REVIEWS (REVIEW_ID),
+    foreign key (REVIEW_ID) references REVIEWS (REVIEW_ID)
+        ON DELETE CASCADE,
     foreign key (USER_ID) references USERS (USER_ID)
+        ON DELETE CASCADE
 );

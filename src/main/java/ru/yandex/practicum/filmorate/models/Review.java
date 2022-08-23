@@ -1,9 +1,8 @@
 package ru.yandex.practicum.filmorate.models;
 
-import lombok.*;
-
+import lombok.Data;
+import lombok.Builder;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -23,7 +22,6 @@ public class Review {
     private  Integer userId;
     @NotNull
     private  Integer filmId;
-    private Set<LikeForReview> likesForReview = new HashSet<>();
 
     public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();
@@ -38,10 +36,4 @@ public class Review {
         return isPositive;
     }
 
-    public void incrementUseful(){
-        useful++;
-    }
-    public void decrementUseful(){
-        useful--;
-    }
 }

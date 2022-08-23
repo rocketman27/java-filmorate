@@ -13,9 +13,7 @@ public interface ReviewService {
 
     Review getReviewById(long id);
 
-    List<Review> getReviews(int count);
-
-    List<Review> getReviewsByFilmId(long filmId, int count);
+    List<Review> getReviews(Long filmId, int count);
 
     void addLike(long id, long userId);
 

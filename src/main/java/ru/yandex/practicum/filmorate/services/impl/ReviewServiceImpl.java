@@ -3,100 +3,107 @@ package ru.yandex.practicum.filmorate.services.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.dao.LikesReviewDao;
 import ru.yandex.practicum.filmorate.dao.ReviewDao;
-import ru.yandex.practicum.filmorate.models.LikeForReview;
+import ru.yandex.practicum.filmorate.dao.UserDao;
+import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.models.Review;
 import ru.yandex.practicum.filmorate.services.ReviewService;
-
-import java.util.HashSet;
 import java.util.List;
 
 @Slf4j
 @Service
 public class ReviewServiceImpl implements ReviewService {
     private final LikesReviewDao likesReviewDao;
-   private final ReviewDao reviewDao;
+    private final ReviewDao reviewDao;
+    private final UserDao userDao;
+    private final FilmDao filmDao;
 
     @Autowired
-    public ReviewServiceImpl(LikesReviewDao likesReviewDao, ReviewDao reviewDao) {
+    public ReviewServiceImpl(LikesReviewDao likesReviewDao, ReviewDao reviewDao, UserDao userDao, FilmDao filmDao) {
         this.likesReviewDao = likesReviewDao;
         this.reviewDao = reviewDao;
+        this.userDao = userDao;
+        this.filmDao = filmDao;
     }
+
     @Override
-    public Review addReview(Review review){
+    public Review addReview(Review review) {
         if (review == null) {
             log.warn("Received request to update the review=null");
             return null;
         }
         log.info("Received request to add review with id={}", review.getReviewId());
-       review =  reviewDao.addReview(review);
-       return review;
+        if (userDao.getUserById(review.getUserId()) == null) {
+            throw new UserNotFoundException("Not found user with id = " + review.getUserId());
+        }
+        if (filmDao.getFilmById(review.getFilmId()) == null) {
+            throw new FilmNotFoundException("Not found film with id = " + review.getFilmId());
+        }
+        return reviewDao.addReview(review);
     }
+
     @Override
-    public Review updateReview(Review review){
+    public Review updateReview(Review review) {
         if (review == null) {
             log.warn("Received request to update the review=null");
             return null;
         }
         log.info("Received request to update the review with id={}", review.getReviewId());
+        if (userDao.getUserById(review.getUserId()) == null) {
+            throw new UserNotFoundException("Not found user with id = " + review.getUserId());
+        }
+        if (filmDao.getFilmById(review.getFilmId()) == null) {
+            throw new FilmNotFoundException("Not found film with id = " + review.getFilmId());
+        }
         reviewDao.updateReview(review);
-        likesReviewDao.addUserLikesForReview(review);
         return review;
     }
+
     @Override
-    public boolean deleteReview(long id){
+    public boolean deleteReview(long id) {
         log.info("Received request to delete review by id = {}", id);
-        likesReviewDao.deleteUserLikesByReviewId(id);
-       return reviewDao.deleteReview(id);
+        likesReviewDao.deleteLikeForReview(id);
+        return reviewDao.deleteReview(id);
 
     }
-@Override
+
+    @Override
     public Review getReviewById(long id) {
-       Review review = reviewDao.getReviewById(id);
-    List<LikeForReview> likesForReview = likesReviewDao.getUserLikesByReviewId(id);
-     if(likesForReview!=null)
-      review.setLikesForReview(new HashSet<>(likesForReview));
-      return review;
+        return reviewDao.getReviewById(id);
     }
+
     @Override
-    public List<Review> getReviews(int count) {
-        List<Review> reviews = reviewDao.getReviews(count);
-        reviews.stream().forEach(review->review.setLikesForReview(new HashSet<>(likesReviewDao.getUserLikesByReviewId(review.getReviewId()))));
-    return reviews;
+    public List<Review> getReviews(Long filmId, int count) {
+        List<Review> reviews;
+        if (filmId == null)
+            reviews = reviewDao.getReviewByFilmId(count);
+        else
+            reviews = reviewDao.getReviewByFilmId(filmId, count);
+        return reviews;
     }
+
     @Override
-    public List<Review> getReviewsByFilmId(long filmId, int count){
-       List<Review> reviews =  reviewDao.getReviews(filmId, count);
-       reviews.stream().forEach(review->review.setLikesForReview(new HashSet<>(likesReviewDao.getUserLikesByReviewId(review.getReviewId()))));
-       return reviews;
+    public void addLike(long id, long userId) {
+        likesReviewDao.addLikeForReview(id, userId, true);
     }
+
     @Override
-    public void addLike(long id, long userId){
-        likesReviewDao.addUserLikesForReview(id,userId,true);
-        reviewDao.getReviewById(id).incrementUseful();
-        reviewDao.incrementUseful(id);
+    public void deleteLike(long id, long userId) {
+        likesReviewDao.deleteLikeForReview(id, userId, true);
 
     }
-    @Override
-    public void deleteLike(long id, long userId){
-        likesReviewDao.deleteUserLikesByReviewId(id,userId,true);
-        reviewDao.getReviewById(id).decrementUseful();
-        reviewDao.decrementUseful(id);
 
-    }
     @Override
     public void addDislike(long id, long userId) {
-        likesReviewDao.addUserLikesForReview(id,userId,false);
-        reviewDao.getReviewById(id).incrementUseful();
-        reviewDao.decrementUseful(id);
-
+        likesReviewDao.addLikeForReview(id, userId, false);
     }
+
     @Override
-    public void deleteDislike(long id, long userId){
-        likesReviewDao.deleteUserLikesByReviewId(id,userId,false);
-        reviewDao.getReviewById(id).decrementUseful();
-        reviewDao.incrementUseful(id);
+    public void deleteDislike(long id, long userId) {
+        likesReviewDao.deleteLikeForReview(id, userId, false);
 
     }
 }
