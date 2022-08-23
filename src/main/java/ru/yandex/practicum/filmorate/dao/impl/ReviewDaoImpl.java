@@ -8,9 +8,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.ReviewDao;
-import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ReviewNotFoundException;
-import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.models.Review;
 
 import java.sql.SQLException;
@@ -32,10 +30,6 @@ public class ReviewDaoImpl implements ReviewDao {
     @Override
     public Review addReview(Review review) {
         final String sqlQuery = "INSERT INTO REVIEWS(CONTENT, IS_POSITIVE, AUTHOR_ID, FILM_ID) VALUES(?,?,?,?)";
-        if (review.getUserId() < 0)
-            throw new UserNotFoundException("User with id = " + review.getUserId() + " not found");
-        else if (review.getFilmId() < 0)
-            throw new FilmNotFoundException("Film with id = " + review.getFilmId() + " not  found");
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"review_id"});

@@ -54,7 +54,7 @@ public class LikesReviewDaoImpl implements LikesReviewDao {
         jdbcTemplate.update(sqlQuery, id);
     }
 
-    public void decrementUseful(long id) {
+    private void decrementUseful(long id) {
         String sqlQuery = "UPDATE REVIEWS SET USEFUL=REVIEWS.USEFUL-1 WHERE REVIEW_ID = ? ";
         jdbcTemplate.update(sqlQuery, id);
     }
