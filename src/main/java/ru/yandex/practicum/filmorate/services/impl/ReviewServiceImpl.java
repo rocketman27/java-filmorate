@@ -7,10 +7,9 @@ import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.dao.LikesReviewDao;
 import ru.yandex.practicum.filmorate.dao.ReviewDao;
 import ru.yandex.practicum.filmorate.dao.UserDao;
-import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.models.Review;
 import ru.yandex.practicum.filmorate.services.ReviewService;
+
 import java.util.List;
 
 @Slf4j
@@ -36,12 +35,8 @@ public class ReviewServiceImpl implements ReviewService {
             return null;
         }
         log.info("Received request to add review with id={}", review.getReviewId());
-        if (userDao.getUserById(review.getUserId()) == null) {
-            throw new UserNotFoundException("Not found user with id = " + review.getUserId());
-        }
-        if (filmDao.getFilmById(review.getFilmId()) == null) {
-            throw new FilmNotFoundException("Not found film with id = " + review.getFilmId());
-        }
+        userDao.getUserById(review.getUserId());
+        filmDao.getFilmById(review.getFilmId());
         return reviewDao.addReview(review);
     }
 
@@ -52,12 +47,8 @@ public class ReviewServiceImpl implements ReviewService {
             return null;
         }
         log.info("Received request to update the review with id={}", review.getReviewId());
-        if (userDao.getUserById(review.getUserId()) == null) {
-            throw new UserNotFoundException("Not found user with id = " + review.getUserId());
-        }
-        if (filmDao.getFilmById(review.getFilmId()) == null) {
-            throw new FilmNotFoundException("Not found film with id = " + review.getFilmId());
-        }
+        userDao.getUserById(review.getUserId());
+        filmDao.getFilmById(review.getFilmId());
         reviewDao.updateReview(review);
         return review;
     }
@@ -65,7 +56,6 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public boolean deleteReview(long id) {
         log.info("Received request to delete review by id = {}", id);
-        likesReviewDao.deleteLikeForReview(id);
         return reviewDao.deleteReview(id);
 
     }
@@ -79,9 +69,9 @@ public class ReviewServiceImpl implements ReviewService {
     public List<Review> getReviews(Long filmId, int count) {
         List<Review> reviews;
         if (filmId == null)
-            reviews = reviewDao.getReviewByFilmId(count);
+            reviews = reviewDao.getReviewsByFilmId(count);
         else
-            reviews = reviewDao.getReviewByFilmId(filmId, count);
+            reviews = reviewDao.getReviewsByFilmId(filmId, count);
         return reviews;
     }
 
