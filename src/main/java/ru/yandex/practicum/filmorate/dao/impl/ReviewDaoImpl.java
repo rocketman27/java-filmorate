@@ -13,7 +13,9 @@ import ru.yandex.practicum.filmorate.exceptions.ReviewNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.models.Review;
 
-import java.sql.*;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -68,21 +70,21 @@ public class ReviewDaoImpl implements ReviewDao {
     }
 
     @Override
-    public List<Review> getReviews(long filmId, int count) {
-        String sqlQuery = "SELECT * FROM REVIEWS WHERE FILM_ID = ? ORDER BY USEFUL DESC, FILM_ID LIMIT ?";
+    public List<Review> getReviewByFilmId(long filmId, int count) {
+        String sqlQuery = "SELECT REVIEW_ID, CONTENT, IS_POSITIVE, USEFUL, FILM_ID, AUTHOR_ID FROM REVIEWS WHERE FILM_ID = ? ORDER BY USEFUL DESC, FILM_ID LIMIT ?";
         return jdbcTemplate.query(sqlQuery, this::mapRowToReview, filmId, count);
     }
 
     @Override
-    public List<Review> getReviews(int count) {
-        String sqlQuery = "SELECT * FROM REVIEWS ORDER BY USEFUL DESC, FILM_ID LIMIT ?";
+    public List<Review> getReviewByFilmId(int count) {
+        String sqlQuery = "SELECT REVIEW_ID, CONTENT, IS_POSITIVE, USEFUL, FILM_ID, AUTHOR_ID FROM REVIEWS ORDER BY USEFUL DESC, FILM_ID LIMIT ?";
         return jdbcTemplate.query(sqlQuery, this::mapRowToReview, count);
 
     }
 
     @Override
     public Review getReviewById(long id) {
-        String sqlQuery = "SELECT * FROM REVIEWS WHERE REVIEW_ID = ?";
+        String sqlQuery = "SELECT REVIEW_ID, CONTENT, IS_POSITIVE, USEFUL, FILM_ID, AUTHOR_ID FROM REVIEWS WHERE REVIEW_ID = ?";
         try {
             return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToReview, id);
         } catch (EmptyResultDataAccessException e) {
@@ -95,7 +97,7 @@ public class ReviewDaoImpl implements ReviewDao {
     public boolean deleteReview(long id) {
         String sqlQuery = "DELETE FROM REVIEWS WHERE REVIEW_ID = ?";
         int result = jdbcTemplate.update(sqlQuery, id);
-        if (result == 0) {
+        if (result == 1) {
             log.info("Review with id = {} was delete", id);
 
         } else {
