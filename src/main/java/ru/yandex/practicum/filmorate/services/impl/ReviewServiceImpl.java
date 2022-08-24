@@ -3,14 +3,22 @@ package ru.yandex.practicum.filmorate.services.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dao.EventsDao;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.dao.LikesReviewDao;
 import ru.yandex.practicum.filmorate.dao.ReviewDao;
 import ru.yandex.practicum.filmorate.dao.UserDao;
+import ru.yandex.practicum.filmorate.models.Event;
+import ru.yandex.practicum.filmorate.models.EventType;
+import ru.yandex.practicum.filmorate.models.OperationType;
 import ru.yandex.practicum.filmorate.models.Review;
 import ru.yandex.practicum.filmorate.services.ReviewService;
 
+import java.time.Instant;
 import java.util.List;
+
+import static ru.yandex.practicum.filmorate.models.EventType.*;
+import static ru.yandex.practicum.filmorate.models.OperationType.*;
 
 @Slf4j
 @Service
@@ -19,13 +27,16 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewDao reviewDao;
     private final UserDao userDao;
     private final FilmDao filmDao;
+    private final EventsDao eventsDao;
 
     @Autowired
-    public ReviewServiceImpl(LikesReviewDao likesReviewDao, ReviewDao reviewDao, UserDao userDao, FilmDao filmDao) {
+    public ReviewServiceImpl(LikesReviewDao likesReviewDao, ReviewDao reviewDao,
+                             UserDao userDao, FilmDao filmDao, EventsDao eventsDao) {
         this.likesReviewDao = likesReviewDao;
         this.reviewDao = reviewDao;
         this.userDao = userDao;
         this.filmDao = filmDao;
+        this.eventsDao = eventsDao;
     }
 
     @Override
@@ -34,10 +45,15 @@ public class ReviewServiceImpl implements ReviewService {
             log.warn("Received request to update the review=null");
             return null;
         }
-        log.info("Received request to add review with id={}", review.getReviewId());
+        log.info("Received request to add review");
+
         userDao.getUserById(review.getUserId());
         filmDao.getFilmById(review.getFilmId());
-        return reviewDao.addReview(review);
+
+        review = reviewDao.addReview(review);
+        Event event = createReviewEvent(review, ADD);
+        eventsDao.addEvent(event);
+        return review;
     }
 
     @Override
@@ -47,17 +63,22 @@ public class ReviewServiceImpl implements ReviewService {
             return null;
         }
         log.info("Received request to update the review with id={}", review.getReviewId());
-        userDao.getUserById(review.getUserId());
-        filmDao.getFilmById(review.getFilmId());
+
         reviewDao.updateReview(review);
+        Review updatedReview = reviewDao.getReviewById(review.getReviewId());
+        Event event = createReviewEvent(updatedReview, UPDATE);
+        eventsDao.addEvent(event);
+
         return review;
     }
 
     @Override
     public boolean deleteReview(long id) {
         log.info("Received request to delete review by id = {}", id);
+        Review review = reviewDao.getReviewById(id);
+        Event event = createReviewEvent(review, REMOVE);
+        eventsDao.addEvent(event);
         return reviewDao.deleteReview(id);
-
     }
 
     @Override
@@ -83,7 +104,6 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void deleteLike(long id, long userId) {
         likesReviewDao.deleteLikeForReview(id, userId, true);
-
     }
 
     @Override
@@ -94,6 +114,15 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void deleteDislike(long id, long userId) {
         likesReviewDao.deleteLikeForReview(id, userId, false);
+    }
 
+    private Event createReviewEvent(Review review, OperationType operation) {
+        return Event.builder()
+                    .withUserId(review.getUserId())
+                    .withEntityId(review.getReviewId())
+                    .withEventType(REVIEW)
+                    .withOperation(operation)
+                    .withTimestamp(Instant.now().toEpochMilli())
+                    .build();
     }
 }
