@@ -26,7 +26,7 @@ public class LikesDaoImpl implements LikesDao {
             jdbcTemplate.update(sqlQuery, userId, filmId);
             log.info("Like by userId={}, filmId={} has been inserted", userId, filmId);
         } catch (DataAccessException e) {
-            throw new DaoException(String.format("Cannot add like by userId=%s for filmId=%s", userId, filmId));
+            log.warn("Cannot add like by userId={} for filmId={}", userId, filmId);
         }
     }
 
