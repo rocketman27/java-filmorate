@@ -3,22 +3,30 @@ package ru.yandex.practicum.filmorate.services.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dao.DirectorDao;
+import ru.yandex.practicum.filmorate.dao.EventsDao;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.dao.GenresDao;
 import ru.yandex.practicum.filmorate.dao.LikesDao;
 import ru.yandex.practicum.filmorate.dao.MpaDao;
-import ru.yandex.practicum.filmorate.dao.DirectorDao;
 import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.exceptions.DirectorNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.IllegalSearchArgumentException;
 import ru.yandex.practicum.filmorate.models.Director;
+import ru.yandex.practicum.filmorate.models.Event;
+import ru.yandex.practicum.filmorate.models.EventType;
 import ru.yandex.practicum.filmorate.models.Film;
 import ru.yandex.practicum.filmorate.models.Genre;
 import ru.yandex.practicum.filmorate.models.Mpa;
+import ru.yandex.practicum.filmorate.models.OperationType;
 import ru.yandex.practicum.filmorate.services.FilmService;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+
+import static ru.yandex.practicum.filmorate.models.EventType.*;
+import static ru.yandex.practicum.filmorate.models.OperationType.*;
 
 @Slf4j
 @Service
@@ -29,16 +37,18 @@ public class FilmServiceImpl implements FilmService {
     private final LikesDao likesDao;
     private final DirectorDao directorDao;
     private final UserDao userDao;
+    private final EventsDao eventsDao;
 
     @Autowired
-    public FilmServiceImpl(FilmDao filmDao, MpaDao mpaDao,
-                           GenresDao genresDao, LikesDao likesDao, DirectorDao directorDao, UserDao userDao) {
+    public FilmServiceImpl(FilmDao filmDao, MpaDao mpaDao, GenresDao genresDao, LikesDao likesDao,
+                           DirectorDao directorDao, UserDao userDao, EventsDao eventsDao) {
         this.filmDao = filmDao;
         this.mpaDao = mpaDao;
         this.genresDao = genresDao;
         this.likesDao = likesDao;
         this.directorDao = directorDao;
         this.userDao = userDao;
+        this.eventsDao = eventsDao;
     }
 
     @Override
@@ -47,7 +57,7 @@ public class FilmServiceImpl implements FilmService {
             log.warn("Received request to update the film=null");
             return null;
         }
-        log.info("Received request to add film with id={}", film.getId());
+        log.info("Received request to add film");
 
         Mpa mpa = mpaDao.getMpaById(film.getMpa().getId());
         film.setMpa(mpa);
@@ -74,20 +84,22 @@ public class FilmServiceImpl implements FilmService {
         return film;
     }
 
-    private boolean addGenresForFilm(long filmId, Collection<Genre> genres) {
+    private void addGenresForFilm(long filmId, Collection<Genre> genres) {
         if (genres == null || genres.size() == 0) {
             log.info("Cannot set up a genre for filmId={}, genres is empty", filmId);
-            return false;
+        } else {
+            log.info("Setting up a genre for filmId={}", filmId);
+            genresDao.addGenresForFilm(filmId, genres);
         }
-        return genresDao.addGenresForFilm(filmId, genres);
     }
 
-    private boolean addDirectorsForFilm(long filmId, Collection<Director> directors) {
+    private void addDirectorsForFilm(long filmId, Collection<Director> directors) {
         if (directors == null || directors.size() == 0) {
             log.info("Cannot set up a directors for filmId={}, directors is empty", filmId);
-            return false;
+        } else {
+            log.info("Setting up a director for filmId={}", filmId);
+            directorDao.addDirectorsForFilm(filmId, directors);
         }
-        return directorDao.addDirectorsForFilm(filmId, directors);
     }
 
     @Override
@@ -122,20 +134,20 @@ public class FilmServiceImpl implements FilmService {
         if (genreId == null) {
             if (year == null) {
                 log.info("Received request to get a list of popular films");
-                films =  filmDao.getPopularFilms(count);
+                films = filmDao.getPopularFilms(count);
             } else {
                 log.info("Received request to get a list of popular films for year={}-th", year);
-                films =  filmDao.getPopularFilmsByYear(count, year);
+                films = filmDao.getPopularFilmsByYear(count, year);
             }
         } else {
             genresDao.getGenreById(genreId);
             if (year == null) {
                 log.info("Received request to get a list of popular films with genre id={}", genreId);
-                films =  filmDao.getPopularFilmsByGenre(count, genreId);
+                films = filmDao.getPopularFilmsByGenre(count, genreId);
             } else {
                 log.info("Received request to get a list of popular films for year={}-th with genre id={}",
                         year, genreId);
-                films =  filmDao.getPopularFilms(count, genreId, year);
+                films = filmDao.getPopularFilms(count, genreId, year);
             }
         }
         films.forEach(f -> {
@@ -197,17 +209,31 @@ public class FilmServiceImpl implements FilmService {
     public void addLike(long filmId, long userId) {
         log.info("Received request to add a like by userId={}, for filmId={}", userId, filmId);
         likesDao.addLike(userId, filmId);
+        Event event = createFilmEvent(userId, filmId, ADD);
+        eventsDao.addEvent(event);
     }
 
     @Override
     public void deleteLike(long filmId, long userId) {
         log.info("Received request to delete a like by userId={}, for filmId={}", userId, filmId);
         likesDao.deleteLike(userId, filmId);
+        Event event = createFilmEvent(userId, filmId, REMOVE);
+        eventsDao.addEvent(event);
     }
 
     @Override
     public void removeFilm(long filmId) {
         log.info("Received request to delete filmId={}", filmId);
         filmDao.removeFilm(filmId);
+    }
+
+    private Event createFilmEvent(long userId, long filmId, OperationType operation) {
+        return Event.builder()
+                    .withUserId(userId)
+                    .withEntityId(filmId)
+                    .withEventType(LIKE)
+                    .withOperation(operation)
+                    .withTimestamp(Instant.now().toEpochMilli())
+                    .build();
     }
 }

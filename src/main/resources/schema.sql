@@ -113,6 +113,21 @@ create table if not exists LIKES
             ON DELETE CASCADE
 );
 
+create table if not exists EVENTS
+(
+    EVENT_ID BIGINT auto_increment,
+    USER_ID BIGINT not null,
+    ENTITY_ID BIGINT not null,
+    EVENT_TYPE CHARACTER VARYING(20) not null,
+    OPERATION_TYPE CHARACTER VARYING(20) not null,
+    CREATED_AT TIMESTAMP not null,
+    constraint PK_EVENTS
+        primary key (EVENT_ID),
+    constraint FK_EVENTS_USERS
+        foreign key (USER_ID) references USERS
+            ON DELETE CASCADE
+);
+
 create table if not exists REVIEWS
 (
     REVIEW_ID   BIGINT auto_increment,
