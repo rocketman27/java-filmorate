@@ -78,8 +78,8 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = reviewDao.getReviewById(id);
         Event event = createReviewEvent(review, REMOVE);
         eventsDao.addEvent(event);
-        boolean successfullyDelete = reviewDao.deleteReview(id);
-        if (successfullyDelete) {
+        boolean successfullyDeleted = reviewDao.deleteReview(id);
+        if (successfullyDeleted) {
             log.info("Review with id = {} was deleted", id);
             return true;
         } else {
@@ -106,8 +106,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void addLike(long id, long userId) {
-        boolean successfullyAdd = likesReviewDao.addLikeForReview(id, userId, true);
-        if (successfullyAdd) {
+        boolean successfullyAdded = likesReviewDao.addLikeForReview(id, userId, true);
+        if (successfullyAdded) {
             log.info("Like user with id {} from review with id {} was added", userId, id);
         } else {
             log.info("Cannot add Like user with id {} from review with id {} ", userId, id);
@@ -116,8 +116,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void deleteLike(long id, long userId) {
-        boolean successfullyDelete = likesReviewDao.deleteLikeForReview(id, userId, true);
-        if (successfullyDelete) {
+        boolean successfullyDeleted = likesReviewDao.deleteLikeForReview(id, userId, true);
+        if (successfullyDeleted) {
             log.info("Like for user with id {} from review with id {} was deleted ", userId, id);
         } else {
             log.info("Cannot delete like for user with id {} from review with id {} ", userId, id);
@@ -126,12 +126,22 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void addDislike(long id, long userId) {
-        likesReviewDao.addLikeForReview(id, userId, false);
+        boolean successfullyAdded = likesReviewDao.addLikeForReview(id, userId, false);
+        if (successfullyAdded) {
+            log.info("Dislike for user with id {} from review with id {} was deleted ", userId, id);
+        } else {
+            log.info("Cannot delete dislike for user with id {} from review with id {} ", userId, id);
+        }
     }
 
     @Override
     public void deleteDislike(long id, long userId) {
-        likesReviewDao.deleteLikeForReview(id, userId, false);
+        boolean successfullyDeleted = likesReviewDao.deleteLikeForReview(id, userId, false);
+        if (successfullyDeleted) {
+            log.info("Dislike for user with id {} from review with id {} was deleted ", userId, id);
+        } else {
+            log.info("Cannot delete dislike for user with id {} from review with id {} ", userId, id);
+        }
     }
 
     private Event createReviewEvent(Review review, OperationType operation) {

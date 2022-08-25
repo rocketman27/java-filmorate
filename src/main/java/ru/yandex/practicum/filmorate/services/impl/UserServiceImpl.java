@@ -11,7 +11,6 @@ import ru.yandex.practicum.filmorate.dao.GenresDao;
 import ru.yandex.practicum.filmorate.dao.DirectorDao;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.models.Event;
-import ru.yandex.practicum.filmorate.models.EventType;
 import ru.yandex.practicum.filmorate.models.OperationType;
 import ru.yandex.practicum.filmorate.models.User;
 import ru.yandex.practicum.filmorate.models.Film;
@@ -84,8 +83,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addFriend(long userId, long friendId) {
         log.info("Received request to add friendId={} for userId={}", friendId, userId);
-        boolean successfullyAdd = friendsDao.addFriend(userId, friendId);
-        if (!successfullyAdd) {
+        boolean successfullyAdded = friendsDao.addFriend(userId, friendId);
+        if (!successfullyAdded) {
             throw new UserNotFoundException(String.format("Cannot add a friend as userId=%s " +
                             "or friendId=%s doesn't exist",
                     userId, friendId));
@@ -98,8 +97,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteFriend(long userId, long friendId) {
         log.info("Received request to delete friendId={} of userId={}", friendId, userId);
-        boolean successfullyDelete = friendsDao.deleteFriend(userId, friendId);
-        if (successfullyDelete) {
+        boolean successfullyDeleted = friendsDao.deleteFriend(userId, friendId);
+        if (successfullyDeleted) {
             log.info("A friend with userId={} has been deleted from the list of friends for userId={}",
                     friendId, userId);
         } else {
@@ -156,8 +155,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void removeUser(long id) {
         log.info("Received request to delete userId={}", id);
-        boolean successfullyRemove = userDao.removeUser(id);
-        if (successfullyRemove) {
+        boolean successfullyRemoved = userDao.removeUser(id);
+        if (successfullyRemoved) {
             log.info("User with userId={} has been deleted", id);
         } else {
             throw new UserNotFoundException(String.format("Cannot delete user as userId=%s doesn't exist",
