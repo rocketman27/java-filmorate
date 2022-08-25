@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.dao.LikesReviewDao;
 import ru.yandex.practicum.filmorate.dao.ReviewDao;
 import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.models.Event;
-import ru.yandex.practicum.filmorate.models.EventType;
 import ru.yandex.practicum.filmorate.models.OperationType;
 import ru.yandex.practicum.filmorate.models.Review;
 import ru.yandex.practicum.filmorate.services.ReviewService;
@@ -79,7 +78,8 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = reviewDao.getReviewById(id);
         Event event = createReviewEvent(review, REMOVE);
         eventsDao.addEvent(event);
-        if (reviewDao.deleteReview(id)) {
+        boolean successfullyDelete = reviewDao.deleteReview(id);
+        if (successfullyDelete) {
             log.info("Review with id = {} was deleted", id);
             return true;
         } else {
@@ -106,7 +106,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void addLike(long id, long userId) {
-        if (likesReviewDao.addLikeForReview(id, userId, true)) {
+        boolean successfullyAdd = likesReviewDao.addLikeForReview(id, userId, true);
+        if (successfullyAdd) {
             log.info("Like user with id {} from review with id {} was added", userId, id);
         } else {
             log.info("Cannot add Like user with id {} from review with id {} ", userId, id);
@@ -115,7 +116,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void deleteLike(long id, long userId) {
-        if (likesReviewDao.deleteLikeForReview(id, userId, true)) {
+        boolean successfullyDelete = likesReviewDao.deleteLikeForReview(id, userId, true);
+        if (successfullyDelete) {
             log.info("Like for user with id {} from review with id {} was deleted ", userId, id);
         } else {
             log.info("Cannot delete like for user with id {} from review with id {} ", userId, id);
@@ -134,11 +136,11 @@ public class ReviewServiceImpl implements ReviewService {
 
     private Event createReviewEvent(Review review, OperationType operation) {
         return Event.builder()
-                .withUserId(review.getUserId())
-                .withEntityId(review.getReviewId())
-                .withEventType(REVIEW)
-                .withOperation(operation)
-                .withTimestamp(Instant.now().toEpochMilli())
-                .build();
+                    .withUserId(review.getUserId())
+                    .withEntityId(review.getReviewId())
+                    .withEventType(REVIEW)
+                    .withOperation(operation)
+                    .withTimestamp(Instant.now().toEpochMilli())
+                    .build();
     }
 }

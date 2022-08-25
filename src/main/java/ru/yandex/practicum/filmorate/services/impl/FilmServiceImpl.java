@@ -78,7 +78,8 @@ public class FilmServiceImpl implements FilmService {
             return null;
         }
         log.info("Received request to update the film with id={}", film.getId());
-        if (filmDao.updateFilm(film)) {
+        boolean successfullyUpdate = filmDao.updateFilm(film);
+        if (successfullyUpdate) {
             log.info("Film with filmId={} has been updated", film.getId());
         } else {
             throw new FilmNotFoundException(String.format("Film with film_id=%s doesn't exist", film.getId()));
@@ -101,7 +102,8 @@ public class FilmServiceImpl implements FilmService {
     }
 
     private void deleteGenresForFilm(long filmId) {
-        if (genresDao.deleteGenresForFilm(filmId)) {
+        boolean successfullyDelete = genresDao.deleteGenresForFilm(filmId);
+        if (successfullyDelete) {
             log.info("Genres for film with film_id={} have been deleted", filmId);
         } else {
             log.info("Cannot delete genres for film_id = {}", filmId);
@@ -118,7 +120,8 @@ public class FilmServiceImpl implements FilmService {
     }
 
     private void deleteDirectorsForFilm(long filmId) {
-        if (directorDao.deleteDirectorsForFilm(filmId)) {
+        boolean successfullyDelete = genresDao.deleteGenresForFilm(filmId);
+        if (successfullyDelete) {
             log.info("Directors for film with film_id={} have been deleted", filmId);
         } else {
             log.info("Cannot delete directors for film_id = {}", filmId);
@@ -231,7 +234,8 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public void addLike(long filmId, long userId) {
         log.info("Received request to add a like by userId={}, for filmId={}", userId, filmId);
-        if (likesDao.addLike(userId, filmId)) {
+        boolean successfullyAdd = likesDao.addLike(userId, filmId);
+        if (successfullyAdd) {
             log.info("Like by userId={}, filmId={} has been inserted", userId, filmId);
         } else {
             log.warn("Cannot add like by userId={} for filmId={}", userId, filmId);
@@ -243,7 +247,8 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public void deleteLike(long filmId, long userId) {
         log.info("Received request to delete a like by userId={}, for filmId={}", userId, filmId);
-        if (likesDao.deleteLike(userId, filmId)) {
+        boolean successfullyDelete = likesDao.deleteLike(userId, filmId);
+        if (successfullyDelete) {
             log.info("Like by userId={}, filmId={} has been deleted", userId, filmId);
         } else {
             throw new LikeNotFoundException(String.format("Like by userId=%s, filmId=%s is not found", userId, filmId));
@@ -255,7 +260,8 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public void removeFilm(long filmId) {
         log.info("Received request to delete filmId={}", filmId);
-        if (filmDao.removeFilm(filmId)) {
+        boolean successfullyRemove = filmDao.removeFilm(filmId);
+        if (successfullyRemove) {
             log.info("Film with filmId={} has been deleted", filmId);
         } else {
             throw new FilmNotFoundException(String.format("Cannot delete film as filmId=%s doesn't exist",
@@ -265,11 +271,11 @@ public class FilmServiceImpl implements FilmService {
 
     private Event createFilmEvent(long userId, long filmId, OperationType operation) {
         return Event.builder()
-                .withUserId(userId)
-                .withEntityId(filmId)
-                .withEventType(LIKE)
-                .withOperation(operation)
-                .withTimestamp(Instant.now().toEpochMilli())
-                .build();
+                    .withUserId(userId)
+                    .withEntityId(filmId)
+                    .withEventType(LIKE)
+                    .withOperation(operation)
+                    .withTimestamp(Instant.now().toEpochMilli())
+                    .build();
     }
 }

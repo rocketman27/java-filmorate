@@ -54,26 +54,30 @@ public class ReviewDaoImpl implements ReviewDao {
                 review.getReviewId());
 
         if (rowsUpdated == 0) {
-            throw new ReviewNotFoundException(String.format("Review with review_id=%s doesn't exist", review.getReviewId()));
+            throw new ReviewNotFoundException(String.format("Review with review_id=%s doesn't exist",
+                    review.getReviewId()));
         }
         return review;
     }
 
     @Override
     public List<Review> getReviewsByFilmId(long filmId, int count) {
-        String sqlQuery = "SELECT REVIEW_ID, CONTENT, IS_POSITIVE, USEFUL, FILM_ID, AUTHOR_ID FROM REVIEWS WHERE FILM_ID = ? ORDER BY USEFUL DESC, FILM_ID LIMIT ?";
+        String sqlQuery = "SELECT REVIEW_ID, CONTENT, IS_POSITIVE, USEFUL, FILM_ID, AUTHOR_ID " +
+                "FROM REVIEWS WHERE FILM_ID = ? ORDER BY USEFUL DESC, FILM_ID LIMIT ?";
         return jdbcTemplate.query(sqlQuery, this::mapRowToReview, filmId, count);
     }
 
     @Override
     public List<Review> getReviewsByFilmId(int count) {
-        String sqlQuery = "SELECT REVIEW_ID, CONTENT, IS_POSITIVE, USEFUL, FILM_ID, AUTHOR_ID FROM REVIEWS ORDER BY USEFUL DESC, FILM_ID LIMIT ?";
+        String sqlQuery = "SELECT REVIEW_ID, CONTENT, IS_POSITIVE, USEFUL, FILM_ID, AUTHOR_ID " +
+                "FROM REVIEWS ORDER BY USEFUL DESC, FILM_ID LIMIT ?";
         return jdbcTemplate.query(sqlQuery, this::mapRowToReview, count);
     }
 
     @Override
     public Review getReviewById(long id) {
-        String sqlQuery = "SELECT REVIEW_ID, CONTENT, IS_POSITIVE, USEFUL, FILM_ID, AUTHOR_ID FROM REVIEWS WHERE REVIEW_ID = ?";
+        String sqlQuery = "SELECT REVIEW_ID, CONTENT, IS_POSITIVE, USEFUL, FILM_ID, AUTHOR_ID " +
+                "FROM REVIEWS WHERE REVIEW_ID = ?";
         try {
             return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToReview, id);
         } catch (EmptyResultDataAccessException e) {
@@ -89,12 +93,12 @@ public class ReviewDaoImpl implements ReviewDao {
 
     private Review mapRowToReview(ResultSet resultSet, int rowNum) throws SQLException {
         return Review.builder()
-                .withReviewId(resultSet.getLong("review_id"))
-                .withContent(resultSet.getString("content"))
-                .withIsPositive(resultSet.getBoolean("is_positive"))
-                .withUseful(resultSet.getInt("useful"))
-                .withUserId(resultSet.getInt("author_id"))
-                .withFilmId(resultSet.getInt("film_id"))
-                .build();
+                     .withReviewId(resultSet.getLong("review_id"))
+                     .withContent(resultSet.getString("content"))
+                     .withIsPositive(resultSet.getBoolean("is_positive"))
+                     .withUseful(resultSet.getInt("useful"))
+                     .withUserId(resultSet.getInt("author_id"))
+                     .withFilmId(resultSet.getInt("film_id"))
+                     .build();
     }
 }

@@ -84,8 +84,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addFriend(long userId, long friendId) {
         log.info("Received request to add friendId={} for userId={}", friendId, userId);
-        if (!friendsDao.addFriend(userId, friendId)) {
-            throw new UserNotFoundException(String.format("Cannot add a friend as userId=%s or friendId=%s doesn't exist",
+        boolean successfullyAdd = friendsDao.addFriend(userId, friendId);
+        if (!successfullyAdd) {
+            throw new UserNotFoundException(String.format("Cannot add a friend as userId=%s " +
+                            "or friendId=%s doesn't exist",
                     userId, friendId));
         }
         log.info("A friend with userId={} has been added to the list of friends for userId={}", friendId, userId);
@@ -96,10 +98,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteFriend(long userId, long friendId) {
         log.info("Received request to delete friendId={} of userId={}", friendId, userId);
-        if (friendsDao.deleteFriend(userId, friendId)) {
-            log.info("A friend with userId={} has been deleted from the list of friends for userId={}", friendId, userId);
+        boolean successfullyDelete = friendsDao.deleteFriend(userId, friendId);
+        if (successfullyDelete) {
+            log.info("A friend with userId={} has been deleted from the list of friends for userId={}",
+                    friendId, userId);
         } else {
-            throw new UserNotFoundException(String.format("Cannot delete a friend as userId=%s or friendId=%s doesn't exist",
+            throw new UserNotFoundException(String.format("Cannot delete a friend as userId=%s " +
+                            "or friendId=%s doesn't exist",
                     userId, friendId));
         }
         Event event = createUserEvent(userId, friendId, REMOVE);
@@ -115,8 +120,8 @@ public class UserServiceImpl implements UserService {
             return new ArrayList<>();
         } else {
             return friendsIds.stream()
-                    .map(userDao::getUserById)
-                    .collect(Collectors.toList());
+                             .map(userDao::getUserById)
+                             .collect(Collectors.toList());
         }
     }
 
@@ -151,7 +156,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void removeUser(long id) {
         log.info("Received request to delete userId={}", id);
-        if (userDao.removeUser(id)) {
+        boolean successfullyRemove = userDao.removeUser(id);
+        if (successfullyRemove) {
             log.info("User with userId={} has been deleted", id);
         } else {
             throw new UserNotFoundException(String.format("Cannot delete user as userId=%s doesn't exist",
@@ -161,11 +167,11 @@ public class UserServiceImpl implements UserService {
 
     private Event createUserEvent(long userId, long friendId, OperationType operationType) {
         return Event.builder()
-                .withUserId(userId)
-                .withEntityId(friendId)
-                .withEventType(FRIEND)
-                .withOperation(operationType)
-                .withTimestamp(Instant.now().toEpochMilli())
-                .build();
+                    .withUserId(userId)
+                    .withEntityId(friendId)
+                    .withEventType(FRIEND)
+                    .withOperation(operationType)
+                    .withTimestamp(Instant.now().toEpochMilli())
+                    .build();
     }
 }

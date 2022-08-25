@@ -76,11 +76,11 @@ public class UserDaoImpl implements UserDao {
 
     private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
         return User.builder()
-                .withId(resultSet.getLong("user_id"))
-                .withEmail(resultSet.getString("email"))
-                .withLogin(resultSet.getString("login"))
-                .withName(resultSet.getString("name"))
-                .withBirthday(resultSet.getDate("birthday_date").toLocalDate())
-                .build();
+                   .withId(resultSet.getLong("user_id"))
+                   .withEmail(resultSet.getString("email"))
+                   .withLogin(resultSet.getString("login"))
+                   .withName(resultSet.getString("name"))
+                   .withBirthday(resultSet.getDate("birthday_date").toLocalDate())
+                   .build();
     }
 }
