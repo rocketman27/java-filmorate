@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.dao.LikesReviewDao;
 import ru.yandex.practicum.filmorate.dao.ReviewDao;
 import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.models.Event;
-import ru.yandex.practicum.filmorate.models.EventType;
 import ru.yandex.practicum.filmorate.models.OperationType;
 import ru.yandex.practicum.filmorate.models.Review;
 import ru.yandex.practicum.filmorate.services.ReviewService;
@@ -65,6 +64,7 @@ public class ReviewServiceImpl implements ReviewService {
         log.info("Received request to update the review with id={}", review.getReviewId());
 
         reviewDao.updateReview(review);
+        log.info("Review with review_id={} has been updated", review.getReviewId());
         Review updatedReview = reviewDao.getReviewById(review.getReviewId());
         Event event = createReviewEvent(updatedReview, UPDATE);
         eventsDao.addEvent(event);
@@ -78,7 +78,14 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = reviewDao.getReviewById(id);
         Event event = createReviewEvent(review, REMOVE);
         eventsDao.addEvent(event);
-        return reviewDao.deleteReview(id);
+        boolean successfullyDeleted = reviewDao.deleteReview(id);
+        if (successfullyDeleted) {
+            log.info("Review with id = {} was deleted", id);
+            return true;
+        } else {
+            log.info("Can't delete review with id = {}", id);
+            return false;
+        }
     }
 
     @Override
@@ -89,31 +96,52 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public List<Review> getReviews(Long filmId, int count) {
         List<Review> reviews;
-        if (filmId == null)
+        if (filmId == null) {
             reviews = reviewDao.getReviewsByFilmId(count);
-        else
+        } else {
             reviews = reviewDao.getReviewsByFilmId(filmId, count);
+        }
         return reviews;
     }
 
     @Override
     public void addLike(long id, long userId) {
-        likesReviewDao.addLikeForReview(id, userId, true);
+        boolean successfullyAdded = likesReviewDao.addLikeForReview(id, userId, true);
+        if (successfullyAdded) {
+            log.info("Like user with id {} from review with id {} was added", userId, id);
+        } else {
+            log.info("Cannot add Like user with id {} from review with id {} ", userId, id);
+        }
     }
 
     @Override
     public void deleteLike(long id, long userId) {
-        likesReviewDao.deleteLikeForReview(id, userId, true);
+        boolean successfullyDeleted = likesReviewDao.deleteLikeForReview(id, userId, true);
+        if (successfullyDeleted) {
+            log.info("Like for user with id {} from review with id {} was deleted ", userId, id);
+        } else {
+            log.info("Cannot delete like for user with id {} from review with id {} ", userId, id);
+        }
     }
 
     @Override
     public void addDislike(long id, long userId) {
-        likesReviewDao.addLikeForReview(id, userId, false);
+        boolean successfullyAdded = likesReviewDao.addLikeForReview(id, userId, false);
+        if (successfullyAdded) {
+            log.info("Dislike for user with id {} from review with id {} was deleted ", userId, id);
+        } else {
+            log.info("Cannot delete dislike for user with id {} from review with id {} ", userId, id);
+        }
     }
 
     @Override
     public void deleteDislike(long id, long userId) {
-        likesReviewDao.deleteLikeForReview(id, userId, false);
+        boolean successfullyDeleted = likesReviewDao.deleteLikeForReview(id, userId, false);
+        if (successfullyDeleted) {
+            log.info("Dislike for user with id {} from review with id {} was deleted ", userId, id);
+        } else {
+            log.info("Cannot delete dislike for user with id {} from review with id {} ", userId, id);
+        }
     }
 
     private Event createReviewEvent(Review review, OperationType operation) {

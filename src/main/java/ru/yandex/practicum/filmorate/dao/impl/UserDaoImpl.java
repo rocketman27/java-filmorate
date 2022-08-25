@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-@Slf4j
 @Repository
 public class UserDaoImpl implements UserDao {
     private final JdbcTemplate jdbcTemplate;
@@ -38,7 +36,6 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<User> getUsers() {
         String sqlQuery = "SELECT user_id, email, login, name, birthday_date FROM users";
-
         return jdbcTemplate.query(sqlQuery, this::mapRowToUser);
     }
 
@@ -72,25 +69,18 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void removeUser(long userId) {
+    public boolean removeUser(long userId) {
         String sqlQuery = "DELETE FROM users WHERE user_id = ?";
-        int result = jdbcTemplate.update(sqlQuery, userId);
-        if (result > 0) {
-            log.info("User with userId={} has been deleted", userId);
-        } else {
-            throw new UserNotFoundException(String.format("Cannot delete user as userId=%s doesn't exist",
-                    userId));
-        }
-
+        return jdbcTemplate.update(sqlQuery, userId) > 0;
     }
 
     private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
         return User.builder()
-                .withId(resultSet.getLong("user_id"))
-                .withEmail(resultSet.getString("email"))
-                .withLogin(resultSet.getString("login"))
-                .withName(resultSet.getString("name"))
-                .withBirthday(resultSet.getDate("birthday_date").toLocalDate())
-                .build();
+                   .withId(resultSet.getLong("user_id"))
+                   .withEmail(resultSet.getString("email"))
+                   .withLogin(resultSet.getString("login"))
+                   .withName(resultSet.getString("name"))
+                   .withBirthday(resultSet.getDate("birthday_date").toLocalDate())
+                   .build();
     }
 }

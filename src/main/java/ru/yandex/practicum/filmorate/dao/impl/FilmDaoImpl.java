@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,7 +14,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-@Slf4j
 @Repository
 public class FilmDaoImpl implements FilmDao {
     private final JdbcTemplate jdbcTemplate;
@@ -81,9 +79,9 @@ public class FilmDaoImpl implements FilmDao {
                         "LEFT JOIN LIKES L on F.FILM_ID = L.FILM_ID " +
                         "INNER JOIN MPA M on F.MPA_ID = M.MPA_ID " +
                         "INNER JOIN ( " +
-                            "SELECT FILM_ID " +
-                            "FROM FILMS_GENRES " +
-                            "WHERE GENRE_ID = ? " +
+                        "SELECT FILM_ID " +
+                        "FROM FILMS_GENRES " +
+                        "WHERE GENRE_ID = ? " +
                         ") AS FILMS_BY_GENRE on F.FILM_ID = FILMS_BY_GENRE.FILM_ID " +
                         "GROUP BY F.FILM_ID " +
                         "ORDER BY COUNT(L.FILM_ID) DESC " +
@@ -113,9 +111,9 @@ public class FilmDaoImpl implements FilmDao {
                         "LEFT JOIN LIKES L on F.FILM_ID = L.FILM_ID " +
                         "INNER JOIN MPA M on F.MPA_ID = M.MPA_ID " +
                         "INNER JOIN ( " +
-                            "SELECT FILM_ID " +
-                            "FROM FILMS_GENRES " +
-                            "WHERE GENRE_ID = ? " +
+                        "SELECT FILM_ID " +
+                        "FROM FILMS_GENRES " +
+                        "WHERE GENRE_ID = ? " +
                         ") AS FILMS_BY_GENRE on F.FILM_ID = FILMS_BY_GENRE.FILM_ID " +
                         "WHERE EXTRACT(YEAR FROM F.RELEASE_DATE) = ? " +
                         "GROUP BY F.FILM_ID " +
@@ -156,22 +154,22 @@ public class FilmDaoImpl implements FilmDao {
                         "INNER JOIN MPA M on F.MPA_ID = M.MPA_ID " +
                         "INNER JOIN LIKES L on F.FILM_ID = L.FILM_ID " +
                         "WHERE L.USER_ID = ( " +
-                            "SELECT USER_ID " +
-                            "FROM LIKES " +
-                            "WHERE FILM_ID IN ( " +
-                                "SELECT FILM_ID " +
-                                "FROM LIKES " +
-                                "WHERE USER_ID = ? " +
-                            ") " +
-                            "AND USER_ID <> ? " +
-                            "GROUP BY USER_ID " +
-                            "ORDER BY COUNT(FILM_ID) DESC " +
-                            "LIMIT 1 " +
+                        "SELECT USER_ID " +
+                        "FROM LIKES " +
+                        "WHERE FILM_ID IN ( " +
+                        "SELECT FILM_ID " +
+                        "FROM LIKES " +
+                        "WHERE USER_ID = ? " +
+                        ") " +
+                        "AND USER_ID <> ? " +
+                        "GROUP BY USER_ID " +
+                        "ORDER BY COUNT(FILM_ID) DESC " +
+                        "LIMIT 1 " +
                         ") " +
                         "AND L.FILM_ID NOT IN ( " +
-                            "SELECT FILM_ID " +
-                            "FROM LIKES " +
-                            "WHERE USER_ID = ?)";
+                        "SELECT FILM_ID " +
+                        "FROM LIKES " +
+                        "WHERE USER_ID = ?)";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, userId, userId, userId);
     }
 
@@ -220,26 +218,20 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public void updateFilm(Film film) {
+    public boolean updateFilm(Film film) {
         String sqlQuery =
                 "UPDATE films " +
                         "SET film_id = ?, name = ?, description = ?, release_date = ?, duration = ?, mpa_id = ? " +
                         "WHERE film_id = ?";
 
-        int rowsUpdated = jdbcTemplate.update(sqlQuery,
+        return jdbcTemplate.update(sqlQuery,
                 film.getId(),
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration(),
                 film.getMpa().getId(),
-                film.getId());
-
-        if (rowsUpdated == 1) {
-            log.info("Film with filmId={} has been updated", film.getId());
-        } else {
-            throw new FilmNotFoundException(String.format("Film with film_id=%s doesn't exist", film.getId()));
-        }
+                film.getId()) > 0;
     }
 
     @Override
@@ -274,27 +266,21 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public void removeFilm(long filmId) {
+    public boolean removeFilm(long filmId) {
         String sqlQuery = "DELETE FROM films WHERE film_id = ?";
-        int result = jdbcTemplate.update(sqlQuery, filmId);
-        if (result > 0) {
-            log.info("Film with filmId={} has been deleted", filmId);
-        } else {
-            throw new FilmNotFoundException(String.format("Cannot delete film as filmId=%s doesn't exist",
-                    filmId));
-        }
+        return jdbcTemplate.update(sqlQuery, filmId) > 0;
     }
 
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
         return Film.builder()
-                .withId(resultSet.getLong("film_id"))
-                .withName(resultSet.getString("name"))
-                .withDescription(resultSet.getString("description"))
-                .withReleaseDate(resultSet.getDate("release_date").toLocalDate())
-                .withDuration(resultSet.getInt("duration"))
-                .withMpa(new Mpa(
-                        resultSet.getInt("mpa_id"),
-                        resultSet.getString("mpa_name")))
-                .build();
+                   .withId(resultSet.getLong("film_id"))
+                   .withName(resultSet.getString("name"))
+                   .withDescription(resultSet.getString("description"))
+                   .withReleaseDate(resultSet.getDate("release_date").toLocalDate())
+                   .withDuration(resultSet.getInt("duration"))
+                   .withMpa(new Mpa(
+                           resultSet.getInt("mpa_id"),
+                           resultSet.getString("mpa_name")))
+                   .build();
     }
 }

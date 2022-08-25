@@ -10,7 +10,7 @@ public interface GenresDao {
 
     List<Genre> getGenresByFilmId(long filmId);
 
-    void deleteGenresForFilm(long filmId);
+    boolean deleteGenresForFilm(long filmId);
 
     Genre getGenreById(long id);
 

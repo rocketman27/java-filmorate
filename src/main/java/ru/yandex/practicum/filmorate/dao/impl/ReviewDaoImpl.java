@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,7 +16,6 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Objects;
 
-@Slf4j
 @Repository
 public class ReviewDaoImpl implements ReviewDao {
     private final JdbcTemplate jdbcTemplate;
@@ -55,60 +53,52 @@ public class ReviewDaoImpl implements ReviewDao {
                 review.getIsPositive(),
                 review.getReviewId());
 
-        if (rowsUpdated == 1) {
-            log.info("Review with review_id={} has been updated", review.getReviewId());
-        } else {
-            throw new ReviewNotFoundException(String.format("Review with review_id=%s doesn't exist", review.getReviewId()));
+        if (rowsUpdated == 0) {
+            throw new ReviewNotFoundException(String.format("Review with review_id=%s doesn't exist",
+                    review.getReviewId()));
         }
         return review;
     }
 
     @Override
     public List<Review> getReviewsByFilmId(long filmId, int count) {
-        String sqlQuery = "SELECT REVIEW_ID, CONTENT, IS_POSITIVE, USEFUL, FILM_ID, AUTHOR_ID FROM REVIEWS WHERE FILM_ID = ? ORDER BY USEFUL DESC, FILM_ID LIMIT ?";
+        String sqlQuery = "SELECT REVIEW_ID, CONTENT, IS_POSITIVE, USEFUL, FILM_ID, AUTHOR_ID " +
+                "FROM REVIEWS WHERE FILM_ID = ? ORDER BY USEFUL DESC, FILM_ID LIMIT ?";
         return jdbcTemplate.query(sqlQuery, this::mapRowToReview, filmId, count);
     }
 
     @Override
     public List<Review> getReviewsByFilmId(int count) {
-        String sqlQuery = "SELECT REVIEW_ID, CONTENT, IS_POSITIVE, USEFUL, FILM_ID, AUTHOR_ID FROM REVIEWS ORDER BY USEFUL DESC, FILM_ID LIMIT ?";
+        String sqlQuery = "SELECT REVIEW_ID, CONTENT, IS_POSITIVE, USEFUL, FILM_ID, AUTHOR_ID " +
+                "FROM REVIEWS ORDER BY USEFUL DESC, FILM_ID LIMIT ?";
         return jdbcTemplate.query(sqlQuery, this::mapRowToReview, count);
-
     }
 
     @Override
     public Review getReviewById(long id) {
-        String sqlQuery = "SELECT REVIEW_ID, CONTENT, IS_POSITIVE, USEFUL, FILM_ID, AUTHOR_ID FROM REVIEWS WHERE REVIEW_ID = ?";
+        String sqlQuery = "SELECT REVIEW_ID, CONTENT, IS_POSITIVE, USEFUL, FILM_ID, AUTHOR_ID " +
+                "FROM REVIEWS WHERE REVIEW_ID = ?";
         try {
             return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToReview, id);
         } catch (EmptyResultDataAccessException e) {
             throw new ReviewNotFoundException(String.format("Review with id=%s doesn't exist", id));
         }
-
     }
 
     @Override
     public boolean deleteReview(long id) {
         String sqlQuery = "DELETE FROM REVIEWS WHERE REVIEW_ID = ?";
-        int result = jdbcTemplate.update(sqlQuery, id);
-        if (result == 1) {
-            log.info("Review with id = {} was delete", id);
-
-        } else {
-            log.info("Can't delete review with id = {}", id);
-        }
-        return result == 1;
+        return jdbcTemplate.update(sqlQuery, id) > 0;
     }
-
 
     private Review mapRowToReview(ResultSet resultSet, int rowNum) throws SQLException {
         return Review.builder()
-                .withReviewId(resultSet.getLong("review_id"))
-                .withContent(resultSet.getString("content"))
-                .withIsPositive(resultSet.getBoolean("is_positive"))
-                .withUseful(resultSet.getInt("useful"))
-                .withUserId(resultSet.getInt("author_id"))
-                .withFilmId(resultSet.getInt("film_id"))
-                .build();
+                     .withReviewId(resultSet.getLong("review_id"))
+                     .withContent(resultSet.getString("content"))
+                     .withIsPositive(resultSet.getBoolean("is_positive"))
+                     .withUseful(resultSet.getInt("useful"))
+                     .withUserId(resultSet.getInt("author_id"))
+                     .withFilmId(resultSet.getInt("film_id"))
+                     .build();
     }
 }

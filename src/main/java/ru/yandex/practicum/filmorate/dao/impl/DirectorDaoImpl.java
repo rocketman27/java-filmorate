@@ -16,7 +16,7 @@ import java.util.List;
 
 @Component("directorDaoImpl")
 public class DirectorDaoImpl implements DirectorDao {
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public DirectorDaoImpl(JdbcTemplate jdbcTemplate) {
@@ -26,9 +26,10 @@ public class DirectorDaoImpl implements DirectorDao {
     @Override
     public boolean addDirectorsForFilm(long filmId, Collection<Director> directors) {
         String params = "(?, ?)";
-        String values =  String.join(",", Collections.nCopies(directors.size(), params));
+        String values = String.join(",", Collections.nCopies(directors.size(), params));
         String sql = String.format("INSERT INTO films_directors (film_id, director_id) VALUES %s", values);
-        Object[] flatDirectors = directors.stream()
+        Object[] flatDirectors = directors
+                .stream()
                 .peek(d -> {
                     if (d == null) {
                         throw new DirectorNotFoundException("Director from list can't be null");
@@ -51,7 +52,7 @@ public class DirectorDaoImpl implements DirectorDao {
     @Override
     public boolean deleteDirectorsForFilm(long filmId) {
         String sql = "DELETE FROM films_directors WHERE film_id = ?";
-        return  jdbcTemplate.update(sql, filmId) > 0;
+        return jdbcTemplate.update(sql, filmId) > 0;
     }
 
     @Override
@@ -74,7 +75,7 @@ public class DirectorDaoImpl implements DirectorDao {
     public Director add(Director director) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName("directors")
-                .usingGeneratedKeyColumns("director_id");
+                        .usingGeneratedKeyColumns("director_id");
         long directorId = simpleJdbcInsert.executeAndReturnKey(director.toMap()).longValue();
         director.setId(directorId);
         return director;
@@ -84,7 +85,7 @@ public class DirectorDaoImpl implements DirectorDao {
     public Director update(Director director) {
         String sql = "UPDATE directors SET name = ? WHERE director_id = ?";
         if (jdbcTemplate.update(sql, director.getName(), director.getId()) == 0) {
-            throw  new DirectorNotFoundException(String.format("Director with id = %s not found", director.getId()));
+            throw new DirectorNotFoundException(String.format("Director with id = %s not found", director.getId()));
         }
         return director;
     }

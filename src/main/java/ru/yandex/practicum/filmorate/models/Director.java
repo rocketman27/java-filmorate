@@ -19,7 +19,7 @@ public class Director {
     private String name;
 
     public Map<String, String> toMap() {
-        HashMap<String, String> toReturn = new HashMap<>();
+        Map<String, String> toReturn = new HashMap<>();
         toReturn.put("name", name);
         return toReturn;
     }
