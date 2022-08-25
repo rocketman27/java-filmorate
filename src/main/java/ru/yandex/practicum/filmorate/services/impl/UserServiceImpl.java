@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.dao.GenresDao;
 import ru.yandex.practicum.filmorate.dao.DirectorDao;
+import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.models.Event;
 import ru.yandex.practicum.filmorate.models.EventType;
 import ru.yandex.practicum.filmorate.models.OperationType;
@@ -83,7 +84,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addFriend(long userId, long friendId) {
         log.info("Received request to add friendId={} for userId={}", friendId, userId);
-        friendsDao.addFriend(userId, friendId);
+        if (!friendsDao.addFriend(userId, friendId)) {
+            throw new UserNotFoundException(String.format("Cannot add a friend as userId=%s or friendId=%s doesn't exist",
+                    userId, friendId));
+        }
+        log.info("A friend with userId={} has been added to the list of friends for userId={}", friendId, userId);
         Event event = createUserEvent(userId, friendId, ADD);
         eventsDao.addEvent(event);
     }
@@ -91,7 +96,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteFriend(long userId, long friendId) {
         log.info("Received request to delete friendId={} of userId={}", friendId, userId);
-        friendsDao.deleteFriend(userId, friendId);
+        if (friendsDao.deleteFriend(userId, friendId)) {
+            log.info("A friend with userId={} has been deleted from the list of friends for userId={}", friendId, userId);
+        } else {
+            throw new UserNotFoundException(String.format("Cannot delete a friend as userId=%s or friendId=%s doesn't exist",
+                    userId, friendId));
+        }
         Event event = createUserEvent(userId, friendId, REMOVE);
         eventsDao.addEvent(event);
     }
@@ -105,8 +115,8 @@ public class UserServiceImpl implements UserService {
             return new ArrayList<>();
         } else {
             return friendsIds.stream()
-                             .map(userDao::getUserById)
-                             .collect(Collectors.toList());
+                    .map(userDao::getUserById)
+                    .collect(Collectors.toList());
         }
     }
 
@@ -141,16 +151,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public void removeUser(long id) {
         log.info("Received request to delete userId={}", id);
-        userDao.removeUser(id);
+        if (userDao.removeUser(id)) {
+            log.info("User with userId={} has been deleted", id);
+        } else {
+            throw new UserNotFoundException(String.format("Cannot delete user as userId=%s doesn't exist",
+                    id));
+        }
     }
 
     private Event createUserEvent(long userId, long friendId, OperationType operationType) {
         return Event.builder()
-                    .withUserId(userId)
-                    .withEntityId(friendId)
-                    .withEventType(FRIEND)
-                    .withOperation(operationType)
-                    .withTimestamp(Instant.now().toEpochMilli())
-                    .build();
+                .withUserId(userId)
+                .withEntityId(friendId)
+                .withEventType(FRIEND)
+                .withOperation(operationType)
+                .withTimestamp(Instant.now().toEpochMilli())
+                .build();
     }
 }

@@ -16,7 +16,7 @@ import java.util.List;
 
 @Component("directorDaoImpl")
 public class DirectorDaoImpl implements DirectorDao {
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public DirectorDaoImpl(JdbcTemplate jdbcTemplate) {

@@ -65,6 +65,7 @@ public class ReviewServiceImpl implements ReviewService {
         log.info("Received request to update the review with id={}", review.getReviewId());
 
         reviewDao.updateReview(review);
+        log.info("Review with review_id={} has been updated", review.getReviewId());
         Review updatedReview = reviewDao.getReviewById(review.getReviewId());
         Event event = createReviewEvent(updatedReview, UPDATE);
         eventsDao.addEvent(event);
@@ -78,7 +79,13 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = reviewDao.getReviewById(id);
         Event event = createReviewEvent(review, REMOVE);
         eventsDao.addEvent(event);
-        return reviewDao.deleteReview(id);
+        if (reviewDao.deleteReview(id)) {
+            log.info("Review with id = {} was deleted", id);
+            return true;
+        } else {
+            log.info("Can't delete review with id = {}", id);
+            return false;
+        }
     }
 
     @Override
@@ -89,21 +96,30 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public List<Review> getReviews(Long filmId, int count) {
         List<Review> reviews;
-        if (filmId == null)
+        if (filmId == null) {
             reviews = reviewDao.getReviewsByFilmId(count);
-        else
+        } else {
             reviews = reviewDao.getReviewsByFilmId(filmId, count);
+        }
         return reviews;
     }
 
     @Override
     public void addLike(long id, long userId) {
-        likesReviewDao.addLikeForReview(id, userId, true);
+        if (likesReviewDao.addLikeForReview(id, userId, true)) {
+            log.info("Like user with id {} from review with id {} was added", userId, id);
+        } else {
+            log.info("Cannot add Like user with id {} from review with id {} ", userId, id);
+        }
     }
 
     @Override
     public void deleteLike(long id, long userId) {
-        likesReviewDao.deleteLikeForReview(id, userId, true);
+        if (likesReviewDao.deleteLikeForReview(id, userId, true)) {
+            log.info("Like for user with id {} from review with id {} was deleted ", userId, id);
+        } else {
+            log.info("Cannot delete like for user with id {} from review with id {} ", userId, id);
+        }
     }
 
     @Override
@@ -118,11 +134,11 @@ public class ReviewServiceImpl implements ReviewService {
 
     private Event createReviewEvent(Review review, OperationType operation) {
         return Event.builder()
-                    .withUserId(review.getUserId())
-                    .withEntityId(review.getReviewId())
-                    .withEventType(REVIEW)
-                    .withOperation(operation)
-                    .withTimestamp(Instant.now().toEpochMilli())
-                    .build();
+                .withUserId(review.getUserId())
+                .withEntityId(review.getReviewId())
+                .withEventType(REVIEW)
+                .withOperation(operation)
+                .withTimestamp(Instant.now().toEpochMilli())
+                .build();
     }
 }

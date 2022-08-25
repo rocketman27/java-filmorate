@@ -11,7 +11,9 @@ import ru.yandex.practicum.filmorate.dao.LikesDao;
 import ru.yandex.practicum.filmorate.dao.MpaDao;
 import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.exceptions.DirectorNotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.IllegalSearchArgumentException;
+import ru.yandex.practicum.filmorate.exceptions.LikeNotFoundException;
 import ru.yandex.practicum.filmorate.models.Director;
 import ru.yandex.practicum.filmorate.models.Event;
 import ru.yandex.practicum.filmorate.models.EventType;
@@ -76,10 +78,14 @@ public class FilmServiceImpl implements FilmService {
             return null;
         }
         log.info("Received request to update the film with id={}", film.getId());
-        filmDao.updateFilm(film);
-        genresDao.deleteGenresForFilm(film.getId());
+        if (filmDao.updateFilm(film)) {
+            log.info("Film with filmId={} has been updated", film.getId());
+        } else {
+            throw new FilmNotFoundException(String.format("Film with film_id=%s doesn't exist", film.getId()));
+        }
+        deleteGenresForFilm(film.getId());
         addGenresForFilm(film.getId(), film.getGenres());
-        directorDao.deleteDirectorsForFilm(film.getId());
+        deleteDirectorsForFilm(film.getId());
         addDirectorsForFilm(film.getId(), film.getDirectors());
         return film;
     }
@@ -90,6 +96,15 @@ public class FilmServiceImpl implements FilmService {
         } else {
             log.info("Setting up a genre for filmId={}", filmId);
             genresDao.addGenresForFilm(filmId, genres);
+            log.info("Genres for film with film_id={} have been added", filmId);
+        }
+    }
+
+    private void deleteGenresForFilm(long filmId) {
+        if (genresDao.deleteGenresForFilm(filmId)) {
+            log.info("Genres for film with film_id={} have been deleted", filmId);
+        } else {
+            log.info("Cannot delete genres for film_id = {}", filmId);
         }
     }
 
@@ -99,6 +114,14 @@ public class FilmServiceImpl implements FilmService {
         } else {
             log.info("Setting up a director for filmId={}", filmId);
             directorDao.addDirectorsForFilm(filmId, directors);
+        }
+    }
+
+    private void deleteDirectorsForFilm(long filmId) {
+        if (directorDao.deleteDirectorsForFilm(filmId)) {
+            log.info("Directors for film with film_id={} have been deleted", filmId);
+        } else {
+            log.info("Cannot delete directors for film_id = {}", filmId);
         }
     }
 
@@ -208,7 +231,11 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public void addLike(long filmId, long userId) {
         log.info("Received request to add a like by userId={}, for filmId={}", userId, filmId);
-        likesDao.addLike(userId, filmId);
+        if (likesDao.addLike(userId, filmId)) {
+            log.info("Like by userId={}, filmId={} has been inserted", userId, filmId);
+        } else {
+            log.warn("Cannot add like by userId={} for filmId={}", userId, filmId);
+        }
         Event event = createFilmEvent(userId, filmId, ADD);
         eventsDao.addEvent(event);
     }
@@ -216,7 +243,11 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public void deleteLike(long filmId, long userId) {
         log.info("Received request to delete a like by userId={}, for filmId={}", userId, filmId);
-        likesDao.deleteLike(userId, filmId);
+        if (likesDao.deleteLike(userId, filmId)) {
+            log.info("Like by userId={}, filmId={} has been deleted", userId, filmId);
+        } else {
+            throw new LikeNotFoundException(String.format("Like by userId=%s, filmId=%s is not found", userId, filmId));
+        }
         Event event = createFilmEvent(userId, filmId, REMOVE);
         eventsDao.addEvent(event);
     }
@@ -224,16 +255,21 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public void removeFilm(long filmId) {
         log.info("Received request to delete filmId={}", filmId);
-        filmDao.removeFilm(filmId);
+        if (filmDao.removeFilm(filmId)) {
+            log.info("Film with filmId={} has been deleted", filmId);
+        } else {
+            throw new FilmNotFoundException(String.format("Cannot delete film as filmId=%s doesn't exist",
+                    filmId));
+        }
     }
 
     private Event createFilmEvent(long userId, long filmId, OperationType operation) {
         return Event.builder()
-                    .withUserId(userId)
-                    .withEntityId(filmId)
-                    .withEventType(LIKE)
-                    .withOperation(operation)
-                    .withTimestamp(Instant.now().toEpochMilli())
-                    .build();
+                .withUserId(userId)
+                .withEntityId(filmId)
+                .withEventType(LIKE)
+                .withOperation(operation)
+                .withTimestamp(Instant.now().toEpochMilli())
+                .build();
     }
 }
