@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,7 +12,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-@Slf4j
 @Repository
 public class MpaDaoImpl implements MpaDao {
     private final JdbcTemplate jdbcTemplate;
@@ -42,6 +40,6 @@ public class MpaDaoImpl implements MpaDao {
 
     private Mpa mapRowToMpa(ResultSet resultSet, int rowNum) throws SQLException {
         return new Mpa(resultSet.getLong("mpa_id"),
-                resultSet.getString("mpa_name"));
+                resultSet.getString("name"));
     }
 }

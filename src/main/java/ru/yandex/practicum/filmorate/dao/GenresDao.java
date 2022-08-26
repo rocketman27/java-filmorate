@@ -1,16 +1,16 @@
 package ru.yandex.practicum.filmorate.dao;
 
-import ru.yandex.practicum.filmorate.models.Film;
 import ru.yandex.practicum.filmorate.models.Genre;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface GenresDao {
-    void addGenresForFilm(Film film);
+    boolean addGenresForFilm(long filmId, Collection<Genre> genres);
 
-    List<Long> getGenresByFilmId(long filmId);
+    List<Genre> getGenresByFilmId(long filmId);
 
-    void deleteGenresForFilm(long filmId);
+    boolean deleteGenresForFilm(long filmId);
 
     Genre getGenreById(long id);
 
