@@ -65,10 +65,10 @@ public class FilmDaoImpl implements FilmDao {
         String sqlQuery =
                 "SELECT f.*, m.name AS mpa_name " +
                         "FROM films f " +
-                        "LEFT JOIN likes ul ON f.film_id = ul.film_id " +
+                        "LEFT JOIN likes l ON f.film_id = l.film_id " +
                         "JOIN mpa m ON f.mpa_id = m.MPA_ID " +
                         "GROUP BY f.film_id " +
-                        "ORDER BY average_score DESC, COUNT(ul.user_id) DESC " +
+                        "ORDER BY f.average_score DESC, COUNT(l.user_id) DESC " +
                         "LIMIT ?";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, limit);
     }
@@ -86,7 +86,7 @@ public class FilmDaoImpl implements FilmDao {
                         "WHERE GENRE_ID = ? " +
                         ") AS FILMS_BY_GENRE on F.FILM_ID = FILMS_BY_GENRE.FILM_ID " +
                         "GROUP BY F.FILM_ID " +
-                        "ORDER BY COUNT(L.FILM_ID) DESC " +
+                        "ORDER BY f.average_score DESC, COUNT(l.user_id) DESC " +
                         "LIMIT ?";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, genreId, limit);
     }
@@ -100,7 +100,7 @@ public class FilmDaoImpl implements FilmDao {
                         "INNER JOIN MPA M on F.MPA_ID = M.MPA_ID " +
                         "WHERE EXTRACT(YEAR FROM F.RELEASE_DATE) = ? " +
                         "GROUP BY F.FILM_ID " +
-                        "ORDER BY COUNT(L.FILM_ID) DESC " +
+                        "ORDER BY f.average_score DESC, COUNT(l.user_id) DESC " +
                         "LIMIT ?";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, year, limit);
     }
@@ -119,7 +119,7 @@ public class FilmDaoImpl implements FilmDao {
                         ") AS FILMS_BY_GENRE on F.FILM_ID = FILMS_BY_GENRE.FILM_ID " +
                         "WHERE EXTRACT(YEAR FROM F.RELEASE_DATE) = ? " +
                         "GROUP BY F.FILM_ID " +
-                        "ORDER BY COUNT(L.FILM_ID) DESC " +
+                        "ORDER BY f.average_score DESC, COUNT(l.user_id) DESC " +
                         "LIMIT ?";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, genreId, year, limit);
     }
@@ -129,22 +129,15 @@ public class FilmDaoImpl implements FilmDao {
         String sqlQuery =
                 "SELECT F.*, M.NAME MPA_NAME " +
                         "FROM FILMS F " +
-                        "INNER JOIN MPA M ON F.mpa_id = M.MPA_ID " +
+                        "INNER JOIN MPA M on M.MPA_ID = F.MPA_ID " +
                         "INNER JOIN LIKES L on F.FILM_ID = L.FILM_ID " +
-                        "INNER JOIN ( " +
-                        "SELECT FILM_ID, " +
-                        "COUNT(FILM_ID) COUNT_LIKES " +
+                        "WHERE L.FILM_ID IN ( " +
+                        "SELECT FILM_ID " +
                         "FROM LIKES " +
-                        "GROUP BY FILM_ID " +
-                        ") AS FILM_LIKE ON F.FILM_ID = FILM_LIKE.FILM_ID " +
-                        "WHERE USER_ID = ? " +
-                        "AND L.FILM_ID IN ( " +
-                        "SELECT LIKES.FILM_ID " +
-                        "FROM LIKES " +
-                        "WHERE USER_ID = ? " +
-                        ") " +
+                        "WHERE USER_ID = ?) " +
+                        "AND USER_ID = ? " +
                         "GROUP BY F.FILM_ID " +
-                        "ORDER BY FILM_LIKE.COUNT_LIKES DESC";
+                        "ORDER BY F.AVERAGE_SCORE, COUNT(L.USER_ID)";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, userId, friendId);
     }
 
@@ -153,26 +146,51 @@ public class FilmDaoImpl implements FilmDao {
         String sqlQuery =
                 "SELECT F.*, M.NAME MPA_NAME " +
                         "FROM FILMS F " +
-                        "INNER JOIN MPA M on F.MPA_ID = M.MPA_ID " +
-                        "INNER JOIN LIKES L on F.FILM_ID = L.FILM_ID " +
-                        "WHERE L.USER_ID = ( " +
-                        "SELECT USER_ID " +
-                        "FROM LIKES " +
-                        "WHERE FILM_ID IN ( " +
-                        "SELECT FILM_ID " +
+                        "INNER JOIN MPA M ON M.MPA_ID = F.MPA_ID " +
+                        "INNER JOIN LIKES L ON F.FILM_ID = L.FILM_ID " +
+                        "WHERE L.USER_ID = " +
+                        "(SELECT L.USER_ID " +
+                        "FROM LIKES L " +
+                        "INNER JOIN " +
+                        "(SELECT USERS.USER_ID, " +
+                        "COUNT( " +
+                        "CASE " +
+                        "WHEN LIKES.FILM_ID IN " +
+                        "(SELECT FILM_ID " +
                         "FROM LIKES " +
                         "WHERE USER_ID = ? " +
-                        ") " +
-                        "AND USER_ID <> ? " +
-                        "GROUP BY USER_ID " +
-                        "ORDER BY COUNT(FILM_ID) DESC " +
-                        "LIMIT 1 " +
-                        ") " +
-                        "AND L.FILM_ID NOT IN ( " +
-                        "SELECT FILM_ID " +
+                        "AND SCORE <= 5) THEN 1 " +
+                        "ELSE NULL " +
+                        "END) COUNT_FILMS " +
+                        "FROM USERS " +
+                        "LEFT JOIN LIKES ON USERS.USER_ID = LIKES.USER_ID " +
+                        "WHERE USERS.USER_ID <> ? " +
+                        "GROUP BY  USERS.USER_ID) AS BAD_FILMS " +
+                        "ON L.USER_ID = BAD_FILMS.USER_ID " +
+                        "INNER JOIN " +
+                        "(SELECT USERS.USER_ID, " +
+                        "COUNT( " +
+                        "CASE " +
+                        "WHEN LIKES.FILM_ID IN " +
+                        "(SELECT FILM_ID " +
                         "FROM LIKES " +
-                        "WHERE USER_ID = ?)";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, userId, userId, userId);
+                        "WHERE USER_ID = ? " +
+                        "AND SCORE >= 6) THEN 1 " +
+                        "ELSE NULL " +
+                        "END) COUNT_FILMS " +
+                        "FROM USERS " +
+                        "LEFT JOIN LIKES ON USERS.USER_ID = LIKES.USER_ID " +
+                        "WHERE USERS.USER_ID <> ? " +
+                        "GROUP BY  USERS.USER_ID) AS GOOD_FILMS ON L.USER_ID = GOOD_FILMS.USER_ID " +
+                        "GROUP BY  L.USER_ID, BAD_FILMS.COUNT_FILMS, GOOD_FILMS.COUNT_FILMS " +
+                        "ORDER BY  (BAD_FILMS.COUNT_FILMS + GOOD_FILMS.COUNT_FILMS) DESC  " +
+                        "LIMIT 1) " +
+                        "AND L.FILM_ID NOT IN " +
+                        "(SELECT FILM_ID " +
+                        "FROM LIKES " +
+                        "WHERE USER_ID = ? " +
+                        "OR SCORE < 6)";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, userId, userId, userId, userId, userId);
     }
 
     @Override
@@ -187,7 +205,7 @@ public class FilmDaoImpl implements FilmDao {
                         "WHERE UPPER(F.NAME) LIKE UPPER(?) " +
                         "OR UPPER(D.NAME) LIKE UPPER(?) " +
                         "GROUP BY F.FILM_ID " +
-                        "ORDER BY COUNT(L.FILM_ID) DESC";
+                        "ORDER BY f.average_score DESC, COUNT(L.FILM_ID) DESC";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, "%" + query + "%", "%" + query + "%");
     }
 
@@ -202,7 +220,7 @@ public class FilmDaoImpl implements FilmDao {
                         "LEFT JOIN DIRECTORS D ON FD.DIRECTOR_ID = D.DIRECTOR_ID " +
                         "WHERE UPPER(D.NAME) LIKE UPPER(?) " +
                         "GROUP BY F.FILM_ID " +
-                        "ORDER BY COUNT(L.FILM_ID) DESC";
+                        "ORDER BY f.average_score DESC, COUNT(L.FILM_ID) DESC";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, "%" + query + "%");
     }
 
@@ -215,7 +233,7 @@ public class FilmDaoImpl implements FilmDao {
                         "INNER JOIN MPA M ON F.MPA_ID = M.MPA_ID " +
                         "WHERE UPPER(F.NAME) LIKE UPPER(?) " +
                         "GROUP BY F.FILM_ID " +
-                        "ORDER BY COUNT(L.FILM_ID) DESC";
+                        "ORDER BY f.average_score DESC, COUNT(L.FILM_ID) DESC";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, "%" + query + "%");
     }
 
