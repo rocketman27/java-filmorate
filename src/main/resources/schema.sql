@@ -14,7 +14,7 @@ create table if not exists FILMS
     RELEASE_DATE  DATE,
     DURATION      INTEGER,
     MPA_ID        BIGINT,
-    AVERAGE_SCORE DECIMAL(2, 1),
+    AVERAGE_SCORE DECIMAL(3, 1),
         constraint PK_FILMS
             primary key (FILM_ID),
     constraint FK_FILMS_MPA
@@ -104,7 +104,7 @@ create table if not exists LIKES
 (
     USER_ID BIGINT not null,
     FILM_ID BIGINT not null,
-    SCORE   INTEGER,
+    SCORE   INTEGER CHECK(SCORE BETWEEN 1 AND 10),
         constraint PK_USERS_LIKES
             primary key (USER_ID, FILM_ID),
     constraint FK_USERS_LIKES_FILMS

@@ -40,7 +40,7 @@ public class LikesDaoTest {
 
     @Test
     void shouldAddAndRecalculateScore() {
-        likesDao.addLike(1, 1, 9);
+        likesDao.addOrUpdateLike(1, 1, 9);
         Film actual = filmDao.getFilmById(1);
         assertThat(actual.getAverageScore()).isNotNull().isEqualTo(9F);
     }

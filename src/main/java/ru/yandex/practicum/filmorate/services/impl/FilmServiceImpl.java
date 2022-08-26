@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.services.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.DirectorDao;
 import ru.yandex.practicum.filmorate.dao.EventsDao;
@@ -17,11 +16,11 @@ import ru.yandex.practicum.filmorate.exceptions.IllegalSearchArgumentException;
 import ru.yandex.practicum.filmorate.exceptions.LikeNotFoundException;
 import ru.yandex.practicum.filmorate.models.Director;
 import ru.yandex.practicum.filmorate.models.Event;
-import ru.yandex.practicum.filmorate.models.EventType;
 import ru.yandex.practicum.filmorate.models.Film;
 import ru.yandex.practicum.filmorate.models.Genre;
 import ru.yandex.practicum.filmorate.models.Mpa;
 import ru.yandex.practicum.filmorate.models.OperationType;
+import ru.yandex.practicum.filmorate.models.Score;
 import ru.yandex.practicum.filmorate.services.FilmService;
 
 import java.time.Instant;
@@ -34,7 +33,7 @@ import static ru.yandex.practicum.filmorate.models.OperationType.*;
 @Slf4j
 @Service
 public class FilmServiceImpl implements FilmService {
-    private final static Integer DEFAULT_SCORE = 8;
+    private final static Integer DEFAULT_SCORE = 10;
     private final FilmDao filmDao;
     private final MpaDao mpaDao;
     private final GenresDao genresDao;
@@ -234,16 +233,17 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public void addLike(long filmId, long userId, Integer score) {
+    public void addLike(long filmId, long userId, Score score) {
         log.info("Received request to add a score by userId={}, for filmId={}", userId, filmId);
-        if (score == null) {
-            score = DEFAULT_SCORE;
+        Integer scoreValue = DEFAULT_SCORE;
+        if (score != null) {
+            scoreValue = score.getScore();
         }
-        boolean successfullyAdded = likesDao.addLike(userId, filmId, score);
+        boolean successfullyAdded = likesDao.addOrUpdateLike(userId, filmId, scoreValue);
         if (successfullyAdded) {
-            log.info("Score by userId={}, filmId={}, value={} has been inserted", userId, filmId, score);
+            log.info("Score by userId={}, filmId={}, value={} has been inserted", userId, filmId, scoreValue);
         } else {
-            log.warn("Cannot add score by userId={} for filmId={}, value={}", userId, filmId, score);
+            log.warn("Cannot add score by userId={} for filmId={}, value={}", userId, filmId, scoreValue);
         }
         Event event = createFilmEvent(userId, filmId, ADD);
         eventsDao.addEvent(event);

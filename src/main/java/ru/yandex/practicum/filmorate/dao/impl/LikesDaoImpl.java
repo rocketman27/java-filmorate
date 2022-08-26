@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.dao.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,15 +19,30 @@ public class LikesDaoImpl implements LikesDao {
 
     @Override
     @Transactional
-    public boolean addLike(long userId, long filmId, Integer score) throws RuntimeException {
-        String sqlQuery = "INSERT INTO LIKES(user_id, film_id, score) VALUES (?, ?, ?)";
+    public boolean addOrUpdateLike(long userId, long filmId, Integer score) {
         try {
-            jdbcTemplate.update(sqlQuery, userId, filmId, score);
-            recalculateAverageScore(filmId);
-        } catch (DataAccessException e) {
-            return false;
+            return addLike(userId, filmId,  score);
+        } catch (DuplicateKeyException e) {
+            return updateLike(userId, filmId, score);
         }
-        return true;
+    }
+
+    private boolean addLike(long userId, long filmId, Integer score) throws DuplicateKeyException {
+        String sqlQuery = "INSERT INTO LIKES(user_id, film_id, score) VALUES (?, ?, ?)";
+        boolean successfullyUpdated = jdbcTemplate.update(sqlQuery, userId, filmId, score) > 0;
+        if (successfullyUpdated) {
+            recalculateAverageScore(filmId);
+        }
+        return successfullyUpdated;
+    }
+
+    private boolean updateLike(long userId, long filmId, Integer score) {
+        String sqlQuery = "UPDATE likes SET score = ? WHERE user_id = ? AND film_id = ?";
+        boolean successfullyUpdated = jdbcTemplate.update(sqlQuery, score, userId, filmId) > 0;
+        if (successfullyUpdated) {
+            recalculateAverageScore(filmId);
+        }
+        return successfullyUpdated;
     }
 
     @Override
