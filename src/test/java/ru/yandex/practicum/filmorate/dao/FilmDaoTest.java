@@ -33,11 +33,11 @@ public class FilmDaoTest {
 
         Assertions.assertNotNull(film);
         Assertions.assertEquals(2, film.getId());
-        Assertions.assertEquals( "TEST", film.getName());
-        Assertions.assertEquals( "DESCRIPTION", film.getDescription());
-        Assertions.assertEquals( 120, film.getDuration());
+        Assertions.assertEquals("TEST", film.getName());
+        Assertions.assertEquals("DESCRIPTION", film.getDescription());
+        Assertions.assertEquals(120, film.getDuration());
         Assertions.assertEquals(LocalDate.of(2022, 8, 10), film.getReleaseDate());
-        Assertions.assertEquals( 1, film.getMpa().getId());
+        Assertions.assertEquals(1, film.getMpa().getId());
     }
 
     @Order(2)
@@ -49,6 +49,7 @@ public class FilmDaoTest {
                         .withDuration(100)
                         .withReleaseDate(LocalDate.of(2022, 8, 10))
                         .withMpa(new Mpa(1, "G"))
+                        .withAverageScore(0F)
                         .build();
 
         film = filmDao.addFilm(film);
@@ -74,6 +75,7 @@ public class FilmDaoTest {
                         .withDuration(101)
                         .withReleaseDate(LocalDate.of(2022, 7, 10))
                         .withMpa(new Mpa(1, "G"))
+                        .withAverageScore(0F)
                         .build();
 
         filmDao.updateFilm(film);
@@ -81,10 +83,10 @@ public class FilmDaoTest {
         Film updatedFilm = filmDao.getFilmById(2);
 
         Assertions.assertNotNull(updatedFilm);
-        Assertions.assertEquals( 2, updatedFilm.getId());
+        Assertions.assertEquals(2, updatedFilm.getId());
         Assertions.assertEquals("Test update", updatedFilm.getName());
         Assertions.assertEquals("Description update", updatedFilm.getDescription());
-        Assertions.assertEquals( 101, updatedFilm.getDuration());
+        Assertions.assertEquals(101, updatedFilm.getDuration());
         Assertions.assertEquals(LocalDate.of(2022, 7, 10), updatedFilm.getReleaseDate());
         Assertions.assertEquals(1, updatedFilm.getMpa().getId());
     }
@@ -94,6 +96,6 @@ public class FilmDaoTest {
     void getPopularFilms() {
         List<Film> popularFilms = filmDao.getPopularFilms(2);
 
-        Assertions.assertEquals(2, popularFilms.get(0).getId());
+        Assertions.assertEquals(2, popularFilms.size());
     }
 }
