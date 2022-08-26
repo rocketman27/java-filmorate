@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.services.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.DirectorDao;
 import ru.yandex.practicum.filmorate.dao.EventsDao;
@@ -33,6 +34,7 @@ import static ru.yandex.practicum.filmorate.models.OperationType.*;
 @Slf4j
 @Service
 public class FilmServiceImpl implements FilmService {
+    private final static Integer DEFAULT_SCORE = 8;
     private final FilmDao filmDao;
     private final MpaDao mpaDao;
     private final GenresDao genresDao;
@@ -232,13 +234,16 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public void addLike(long filmId, long userId) {
-        log.info("Received request to add a like by userId={}, for filmId={}", userId, filmId);
-        boolean successfullyAdded = likesDao.addLike(userId, filmId);
+    public void addLike(long filmId, long userId, Integer score) {
+        log.info("Received request to add a score by userId={}, for filmId={}", userId, filmId);
+        if (score == null) {
+            score = DEFAULT_SCORE;
+        }
+        boolean successfullyAdded = likesDao.addLike(userId, filmId, score);
         if (successfullyAdded) {
-            log.info("Like by userId={}, filmId={} has been inserted", userId, filmId);
+            log.info("Score by userId={}, filmId={}, value={} has been inserted", userId, filmId, score);
         } else {
-            log.warn("Cannot add like by userId={} for filmId={}", userId, filmId);
+            log.warn("Cannot add score by userId={} for filmId={}, value={}", userId, filmId, score);
         }
         Event event = createFilmEvent(userId, filmId, ADD);
         eventsDao.addEvent(event);
@@ -246,12 +251,13 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public void deleteLike(long filmId, long userId) {
-        log.info("Received request to delete a like by userId={}, for filmId={}", userId, filmId);
+        log.info("Received request to delete a score by userId={}, for filmId={}", userId, filmId);
         boolean successfullyDeleted = likesDao.deleteLike(userId, filmId);
         if (successfullyDeleted) {
-            log.info("Like by userId={}, filmId={} has been deleted", userId, filmId);
+            log.info("Score by userId={}, filmId={} has been deleted", userId, filmId);
         } else {
-            throw new LikeNotFoundException(String.format("Like by userId=%s, filmId=%s is not found", userId, filmId));
+            throw new LikeNotFoundException(String.format("Score by userId=%s, filmId=%s is not found",
+                    userId, filmId));
         }
         Event event = createFilmEvent(userId, filmId, REMOVE);
         eventsDao.addEvent(event);
