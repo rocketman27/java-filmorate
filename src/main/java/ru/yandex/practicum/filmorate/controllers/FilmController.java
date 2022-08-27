@@ -19,8 +19,6 @@ import ru.yandex.practicum.filmorate.models.Score;
 import ru.yandex.practicum.filmorate.services.FilmService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import java.util.List;
 
 @Slf4j

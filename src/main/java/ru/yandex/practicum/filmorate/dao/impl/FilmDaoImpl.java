@@ -144,52 +144,32 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public List<Film> getRecommendation(long userId) {
         String sqlQuery =
-                "SELECT F.*, M.NAME MPA_NAME " +
-                        "FROM FILMS F " +
-                        "INNER JOIN MPA M ON M.MPA_ID = F.MPA_ID " +
-                        "INNER JOIN LIKES L ON F.FILM_ID = L.FILM_ID " +
-                        "WHERE L.USER_ID = " +
-                        "(SELECT L.USER_ID " +
-                        "FROM LIKES L " +
-                        "INNER JOIN " +
-                        "(SELECT USERS.USER_ID, " +
-                        "COUNT( " +
-                        "CASE " +
-                        "WHEN LIKES.FILM_ID IN " +
-                        "(SELECT FILM_ID " +
+                "SELECT *, MPA.NAME AS MPA_NAME " +
+                        "FROM FILMS AS F " +
+                        "INNER JOIN MPA ON F.MPA_ID = MPA.MPA_ID " +
+                        "INNER JOIN LIKES AS L ON F.FILM_ID = L.FILM_ID " +
+                        "WHERE  L.USER_ID = " +
+                        "(SELECT USER_ID FROM " +
+                        "(SELECT USER_ID, SUM(FILMS_COUNT) " +
+                        "FROM (SELECT USER_ID, COUNT(USER_ID) AS FILMS_COUNT " +
                         "FROM LIKES " +
-                        "WHERE USER_ID = ? " +
-                        "AND SCORE <= 5) THEN 1 " +
-                        "ELSE NULL " +
-                        "END) COUNT_FILMS " +
-                        "FROM USERS " +
-                        "LEFT JOIN LIKES ON USERS.USER_ID = LIKES.USER_ID " +
-                        "WHERE USERS.USER_ID <> ? " +
-                        "GROUP BY  USERS.USER_ID) AS BAD_FILMS " +
-                        "ON L.USER_ID = BAD_FILMS.USER_ID " +
-                        "INNER JOIN " +
-                        "(SELECT USERS.USER_ID, " +
-                        "COUNT( " +
-                        "CASE " +
-                        "WHEN LIKES.FILM_ID IN " +
-                        "(SELECT FILM_ID " +
+                        "WHERE FILM_ID IN (SELECT FILM_ID " +
+                        "                        FROM LIKES " +
+                        "                        WHERE USER_ID = ? " +
+                        "                        AND SCORE <= 5) AND USER_ID <> ? AND SCORE <= 5 " +
+                        "GROUP BY USER_ID " +
+                        "UNION ALL " +
+                        "SELECT USER_ID, COUNT(USER_ID) AS FILMS_COUNT " +
                         "FROM LIKES " +
-                        "WHERE USER_ID = ? " +
-                        "AND SCORE >= 6) THEN 1 " +
-                        "ELSE NULL " +
-                        "END) COUNT_FILMS " +
-                        "FROM USERS " +
-                        "LEFT JOIN LIKES ON USERS.USER_ID = LIKES.USER_ID " +
-                        "WHERE USERS.USER_ID <> ? " +
-                        "GROUP BY  USERS.USER_ID) AS GOOD_FILMS ON L.USER_ID = GOOD_FILMS.USER_ID " +
-                        "GROUP BY  L.USER_ID, BAD_FILMS.COUNT_FILMS, GOOD_FILMS.COUNT_FILMS " +
-                        "ORDER BY  (BAD_FILMS.COUNT_FILMS + GOOD_FILMS.COUNT_FILMS) DESC  " +
-                        "LIMIT 1) " +
-                        "AND L.FILM_ID NOT IN " +
-                        "(SELECT FILM_ID " +
-                        "FROM LIKES " +
-                        "WHERE USER_ID = ? " +
-                        "OR SCORE < 6)";
+                        "WHERE FILM_ID IN (SELECT FILM_ID " +
+                        "                        FROM LIKES " +
+                        "                        WHERE USER_ID = ? " +
+                        "                        AND SCORE >= 6) AND USER_ID <> ? AND SCORE >= 6 " +
+                        "GROUP BY USER_ID) " +
+                        "GROUP BY USER_ID " +
+                        "ORDER BY SUM(FILMS_COUNT) " +
+                        "LIMIT 1)) " +
+                        "AND F.FILM_ID NOT IN (SELECT L.FILM_ID FROM LIKES AS L WHERE L.USER_ID = ? OR L.SCORE < 6)";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, userId, userId, userId, userId, userId);
     }
 
