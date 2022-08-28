@@ -1,0 +1,1681 @@
+{
+	"info": {
+		"_postman_id": "e07495d1-b661-4ec1-b882-ada4fe568d6b",
+		"name": "filmorate-scores",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21566078"
+	},
+	"item": [
+		{
+			"name": "Create users",
+			"item": [
+				{
+					"name": "Add user 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 201\", function () {\r",
+									"     pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"UserScore1\",\r\n    \"email\": \"userscore1@mail.ru\",\r\n    \"login\":\"userscore1\",\r\n    \"birthday\": \"2000-01-01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add user 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 201\", function () {\r",
+									"     pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"UserScore2\",\r\n    \"email\": \"userscore2@mail.ru\",\r\n    \"login\":\"userscore2\",\r\n    \"birthday\": \"2000-01-01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add user 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 201\", function () {\r",
+									"     pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"UserScore3\",\r\n    \"email\": \"userscore3@mail.ru\",\r\n    \"login\":\"userscore3\",\r\n    \"birthday\": \"2000-01-01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add user 4",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 201\", function () {\r",
+									"     pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"UserScore4\",\r\n    \"email\": \"userscore4@mail.ru\",\r\n    \"login\":\"userscore4\",\r\n    \"birthday\": \"2000-01-01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add user 5",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 201\", function () {\r",
+									"     pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"UserScore5\",\r\n    \"email\": \"userscore5@mail.ru\",\r\n    \"login\":\"userscore5\",\r\n    \"birthday\": \"2000-01-01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create films",
+			"item": [
+				{
+					"name": "Create director",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Director one\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/directors",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"directors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create film 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Film one\",\r\n  \"releaseDate\": \"1979-04-17\",\r\n  \"description\": \"This is a film one\",\r\n  \"duration\": 100,\r\n  \"rate\": 4,\r\n  \"mpa\": { \"id\": 1},\r\n  \"genres\": [{\"id\": 1}],\r\n  \"directors\": [{ \"id\": 1}]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/films",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create film 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Film two\",\r\n  \"releaseDate\": \"1980-04-17\",\r\n  \"description\": \"This is a film two\",\r\n  \"duration\": 140,\r\n  \"rate\": 4,\r\n  \"mpa\": { \"id\": 1},\r\n  \"genres\": [{\"id\":1}]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/films",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create film 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Film three\",\r\n  \"releaseDate\": \"1981-04-17\",\r\n  \"description\": \"This is a film three\",\r\n  \"duration\": 300,\r\n  \"rate\": 4,\r\n  \"mpa\": { \"id\": 1},\r\n  \"genres\": [{\"id\": 2}]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/films",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create film 4",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Film four\",\r\n  \"releaseDate\": \"1982-04-17\",\r\n  \"description\": \"This is a film four\",\r\n  \"duration\": 400,\r\n  \"rate\": 4,\r\n  \"mpa\": { \"id\": 1},\r\n  \"genres\": [{\"id\": 2}]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/films",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create film 5",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Film five\",\r\n  \"releaseDate\": \"1983-04-17\",\r\n  \"description\": \"This is a film five\",\r\n  \"duration\": 50,\r\n  \"rate\": 4,\r\n  \"mpa\": {\"id\": 1}, \r\n  \"directors\": [{ \"id\": 1}]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/films",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create film 6",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Film six\",\r\n  \"releaseDate\": \"1984-04-17\",\r\n  \"description\": \"This is a film six\",\r\n  \"duration\": 60,\r\n  \"rate\": 4,\r\n  \"mpa\": {\"id\": 2}, \r\n  \"directors\": [{ \"id\": 1}]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/films",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "add scores",
+			"item": [
+				{
+					"name": "Add 8 score to film 1 from user 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"score\": 8\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/films/:id/like/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								":id",
+								"like",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								},
+								{
+									"key": "userId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add 7 score to film 1 from user 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"score\": 7\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/films/:id/like/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								":id",
+								"like",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								},
+								{
+									"key": "userId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add 5 score to film 1 from user 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"score\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/films/:id/like/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								":id",
+								"like",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								},
+								{
+									"key": "userId",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add 7 score to film 2 from user 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"score\": 7\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/films/:id/like/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								":id",
+								"like",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "2"
+								},
+								{
+									"key": "userId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add 7 score to film 2 from user 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"score\": 7\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/films/:id/like/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								":id",
+								"like",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "2"
+								},
+								{
+									"key": "userId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add 4 score to film 2 from user 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"score\": 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/films/:id/like/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								":id",
+								"like",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "2"
+								},
+								{
+									"key": "userId",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add 4 score to film 3 from user 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"score\": 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/films/:id/like/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								":id",
+								"like",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3"
+								},
+								{
+									"key": "userId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add 6 score to film 3 from user 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"score\": 6\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/films/:id/like/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								":id",
+								"like",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3"
+								},
+								{
+									"key": "userId",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add 9 score to film 4 from user 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"score\": 9\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/films/:id/like/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								":id",
+								"like",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "4"
+								},
+								{
+									"key": "userId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add 2 score to film 5 from user 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"score\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/films/:id/like/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								":id",
+								"like",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "5"
+								},
+								{
+									"key": "userId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add 8 score to film 5 from user 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"score\": 8\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/films/:id/like/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								":id",
+								"like",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "5"
+								},
+								{
+									"key": "userId",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get average score from film 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Test get film\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id).to.eql(1);\r",
+									"    pm.expect(jsonData.name).to.eql('Film one');\r",
+									"    pm.expect(jsonData.description).to.eql('This is a film one');    \r",
+									"    pm.expect(jsonData.releaseDate).to.eql('1979-04-17');\r",
+									"    pm.expect(jsonData.duration).to.eql(100);\r",
+									"    pm.expect(jsonData.mpa.id).to.eql(1);\r",
+									"    pm.expect(jsonData.averageScore).to.eql(6.7);\r",
+									"    pm.expect(jsonData.mpa.name).not.null;\r",
+									"    if (jsonData.genres != null) {\r",
+									"        pm.expect(jsonData.genres.length).to.eql(1);\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/films/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get recommendations for user 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Film get Recommendations to user 1 from user 2\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.length).to.eql(1);\r",
+									"    pm.expect(jsonData[0].id).to.eql(4);\r",
+									"    pm.expect(jsonData[0].name).to.eql('Film four');\r",
+									"    pm.expect(jsonData[0].description).to.eql('This is a film four');    \r",
+									"    pm.expect(jsonData[0].releaseDate).to.eql('1982-04-17');\r",
+									"    pm.expect(jsonData[0].duration).to.eql(400);\r",
+									"    pm.expect(jsonData[0].averageScore).to.eql(9);\r",
+									"    pm.expect(jsonData[0].mpa.id).to.eql(1);\r",
+									"    pm.expect(jsonData[0].mpa.name).not.null;\r",
+									"    if (jsonData[0].genres != null) {\r",
+									"        pm.expect(jsonData[0].genres.length).to.eql(1);\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/:userId/recommendations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":userId",
+								"recommendations"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get popular films",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Get popular films\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.length).to.eql(5);\r",
+									"    pm.expect(jsonData[0].id).to.eql(4);\r",
+									"    pm.expect(jsonData[0].name).to.eql('Film four');\r",
+									"    pm.expect(jsonData[0].description).to.eql('This is a film four');    \r",
+									"    pm.expect(jsonData[0].releaseDate).to.eql('1982-04-17');\r",
+									"    pm.expect(jsonData[0].duration).to.eql(400);\r",
+									"    pm.expect(jsonData[0].averageScore).to.eql(9);\r",
+									"    pm.expect(jsonData[0].mpa.id).to.eql(1);\r",
+									"    pm.expect(jsonData[0].mpa.name).not.null;\r",
+									"    if (jsonData[0].genres != null) {\r",
+									"        pm.expect(jsonData[0].genres.length).to.eql(1);\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get popular films\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData[1].id).to.eql(1);\r",
+									"    pm.expect(jsonData[1].name).to.eql('Film one');\r",
+									"    pm.expect(jsonData[1].description).to.eql('This is a film one');    \r",
+									"    pm.expect(jsonData[1].releaseDate).to.eql('1979-04-17');\r",
+									"    pm.expect(jsonData[1].duration).to.eql(100);\r",
+									"    pm.expect(jsonData[1].averageScore).to.eql(6.7);\r",
+									"    pm.expect(jsonData[1].mpa.id).to.eql(1);\r",
+									"    pm.expect(jsonData[1].mpa.name).not.null;\r",
+									"    if (jsonData[1].genres != null) {\r",
+									"        pm.expect(jsonData[1].genres.length).to.eql(1);\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get popular films\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData[2].id).to.eql(2);\r",
+									"    pm.expect(jsonData[2].name).to.eql('Film two');\r",
+									"    pm.expect(jsonData[2].description).to.eql('This is a film two');    \r",
+									"    pm.expect(jsonData[2].releaseDate).to.eql('1980-04-17');\r",
+									"    pm.expect(jsonData[2].duration).to.eql(140);\r",
+									"    pm.expect(jsonData[2].averageScore).to.eql(6);\r",
+									"    pm.expect(jsonData[2].mpa.id).to.eql(1);\r",
+									"    pm.expect(jsonData[2].mpa.name).not.null;\r",
+									"    if (jsonData[2].genres != null) {\r",
+									"        pm.expect(jsonData[2].genres.length).to.eql(1);\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get popular films\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData[3].id).to.eql(3);\r",
+									"    pm.expect(jsonData[3].name).to.eql('Film three');\r",
+									"    pm.expect(jsonData[3].description).to.eql('This is a film three');    \r",
+									"    pm.expect(jsonData[3].releaseDate).to.eql('1981-04-17');\r",
+									"    pm.expect(jsonData[3].duration).to.eql(300);\r",
+									"    pm.expect(jsonData[3].averageScore).to.eql(5);\r",
+									"    pm.expect(jsonData[3].mpa.id).to.eql(1);\r",
+									"    pm.expect(jsonData[3].mpa.name).not.null;\r",
+									"    if (jsonData[3].genres != null) {\r",
+									"        pm.expect(jsonData[3].genres.length).to.eql(1);\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get popular films\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData[4].id).to.eql(5);\r",
+									"    pm.expect(jsonData[4].name).to.eql('Film five');\r",
+									"    pm.expect(jsonData[4].description).to.eql('This is a film five');    \r",
+									"    pm.expect(jsonData[4].releaseDate).to.eql('1983-04-17');\r",
+									"    pm.expect(jsonData[4].duration).to.eql(50);\r",
+									"    pm.expect(jsonData[4].averageScore).to.eql(5);\r",
+									"    pm.expect(jsonData[4].mpa.id).to.eql(1);\r",
+									"    pm.expect(jsonData[4].mpa.name).not.null;\r",
+									"    if (jsonData[4].genres != null) {\r",
+									"        pm.expect(jsonData[4].genres.length).to.eql(0);\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/films/popular?count=5",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								"popular"
+							],
+							"query": [
+								{
+									"key": "count",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get popular films by genre",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get popular films\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData[0].id).to.eql(1);\r",
+									"    pm.expect(jsonData[0].name).to.eql('Film one');\r",
+									"    pm.expect(jsonData[0].description).to.eql('This is a film one');    \r",
+									"    pm.expect(jsonData[0].releaseDate).to.eql('1979-04-17');\r",
+									"    pm.expect(jsonData[0].duration).to.eql(100);\r",
+									"    pm.expect(jsonData[0].averageScore).to.eql(6.7);\r",
+									"    pm.expect(jsonData[0].mpa.id).to.eql(1);\r",
+									"    pm.expect(jsonData[0].mpa.name).not.null;\r",
+									"    if (jsonData[0].genres != null) {\r",
+									"        pm.expect(jsonData[0].genres.length).to.eql(1);\r",
+									"    }\r",
+									"    pm.expect(jsonData[0].genres[0].id).to.eql(1);\r",
+									"    pm.expect(jsonData[0].genres[0].name).to.eql('Комедия');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get popular films\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData[1].id).to.eql(2);\r",
+									"    pm.expect(jsonData[1].name).to.eql('Film two');\r",
+									"    pm.expect(jsonData[1].description).to.eql('This is a film two');    \r",
+									"    pm.expect(jsonData[1].releaseDate).to.eql('1980-04-17');\r",
+									"    pm.expect(jsonData[1].duration).to.eql(140);\r",
+									"    pm.expect(jsonData[1].averageScore).to.eql(6);\r",
+									"    pm.expect(jsonData[1].mpa.id).to.eql(1);\r",
+									"    pm.expect(jsonData[1].mpa.name).not.null;\r",
+									"    if (jsonData[1].genres != null) {\r",
+									"        pm.expect(jsonData[1].genres.length).to.eql(1);\r",
+									"    }\r",
+									"    pm.expect(jsonData[1].genres[0].id).to.eql(1);\r",
+									"    pm.expect(jsonData[1].genres[0].name).to.eql('Комедия');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/films/popular?genreId=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								"popular"
+							],
+							"query": [
+								{
+									"key": "genreId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get popular films by year",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get popular films\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData[0].id).to.eql(2);\r",
+									"    pm.expect(jsonData[0].name).to.eql('Film two');\r",
+									"    pm.expect(jsonData[0].description).to.eql('This is a film two');    \r",
+									"    pm.expect(jsonData[0].releaseDate).to.eql('1980-04-17');\r",
+									"    pm.expect(jsonData[0].duration).to.eql(140);\r",
+									"    pm.expect(jsonData[0].averageScore).to.eql(6);\r",
+									"    pm.expect(jsonData[0].mpa.id).to.eql(1);\r",
+									"    pm.expect(jsonData[0].mpa.name).not.null;\r",
+									"    if (jsonData[0].genres != null) {\r",
+									"        pm.expect(jsonData[0].genres.length).to.eql(1);\r",
+									"    }\r",
+									"    pm.expect(jsonData[0].genres[0].id).to.eql(1);\r",
+									"    pm.expect(jsonData[0].genres[0].name).to.eql('Комедия');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/films/popular?year=1980",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								"popular"
+							],
+							"query": [
+								{
+									"key": "year",
+									"value": "1980"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get popular films by director",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get popular films\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData[0].id).to.eql(1);\r",
+									"    pm.expect(jsonData[0].name).to.eql('Film one');\r",
+									"    pm.expect(jsonData[0].description).to.eql('This is a film one');    \r",
+									"    pm.expect(jsonData[0].releaseDate).to.eql('1979-04-17');\r",
+									"    pm.expect(jsonData[0].duration).to.eql(100);\r",
+									"    pm.expect(jsonData[0].averageScore).to.eql(6.7);\r",
+									"    pm.expect(jsonData[0].mpa.id).to.eql(1);\r",
+									"    pm.expect(jsonData[0].mpa.name).not.null;\r",
+									"    if (jsonData[0].genres != null) {\r",
+									"        pm.expect(jsonData[0].genres.length).to.eql(1);\r",
+									"    }\r",
+									"    pm.expect(jsonData[0].genres[0].id).to.eql(1);\r",
+									"    pm.expect(jsonData[0].genres[0].name).to.eql('Комедия');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get popular films\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData[1].id).to.eql(5);\r",
+									"    pm.expect(jsonData[1].name).to.eql('Film five');\r",
+									"    pm.expect(jsonData[1].description).to.eql('This is a film five');    \r",
+									"    pm.expect(jsonData[1].releaseDate).to.eql('1983-04-17');\r",
+									"    pm.expect(jsonData[1].duration).to.eql(50);\r",
+									"    pm.expect(jsonData[1].averageScore).to.eql(5);\r",
+									"    pm.expect(jsonData[1].mpa.id).to.eql(1);\r",
+									"    pm.expect(jsonData[1].mpa.name).not.null;\r",
+									"    if (jsonData[1].genres != null) {\r",
+									"        pm.expect(jsonData[1].genres.length).to.eql(0);\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/films/director/:directorId?sortBy=likes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								"director",
+								":directorId"
+							],
+							"query": [
+								{
+									"key": "sortBy",
+									"value": "likes"
+								}
+							],
+							"variable": [
+								{
+									"key": "directorId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add 8 score to film 6 from user 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"score\": 8\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/films/:id/like/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								":id",
+								"like",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "6"
+								},
+								{
+									"key": "userId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get recommendations for user 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Film get Recommendations to user 1 from user 2\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.length).to.eql(1);\r",
+									"    pm.expect(jsonData[0].id).to.eql(6);\r",
+									"    pm.expect(jsonData[0].name).to.eql('Film six');\r",
+									"    pm.expect(jsonData[0].description).to.eql('This is a film six');    \r",
+									"    pm.expect(jsonData[0].releaseDate).to.eql('1984-04-17');\r",
+									"    pm.expect(jsonData[0].duration).to.eql(60);\r",
+									"    pm.expect(jsonData[0].averageScore).to.eql(8);\r",
+									"    pm.expect(jsonData[0].mpa.id).to.eql(2);\r",
+									"    pm.expect(jsonData[0].mpa.name).not.null;\r",
+									"    if (jsonData[0].genres != null) {\r",
+									"        pm.expect(jsonData[0].genres.length).to.eql(0);\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/:userId/recommendations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":userId",
+								"recommendations"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get common films",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get popular films\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.length).to.eql(2);\r",
+									"    pm.expect(jsonData[0].id).to.eql(1);\r",
+									"    pm.expect(jsonData[0].name).to.eql('Film one');\r",
+									"    pm.expect(jsonData[0].description).to.eql('This is a film one');    \r",
+									"    pm.expect(jsonData[0].releaseDate).to.eql('1979-04-17');\r",
+									"    pm.expect(jsonData[0].duration).to.eql(100);\r",
+									"    pm.expect(jsonData[0].averageScore).to.eql(6.7);\r",
+									"    pm.expect(jsonData[0].mpa.id).to.eql(1);\r",
+									"    pm.expect(jsonData[0].mpa.name).not.null;\r",
+									"    if (jsonData[0].genres != null) {\r",
+									"        pm.expect(jsonData[0].genres.length).to.eql(1);\r",
+									"    }\r",
+									"    pm.expect(jsonData[0].genres[0].id).to.eql(1);\r",
+									"    pm.expect(jsonData[0].genres[0].name).to.eql('Комедия');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get popular films\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData[1].id).to.eql(2);\r",
+									"    pm.expect(jsonData[1].name).to.eql('Film two');\r",
+									"    pm.expect(jsonData[1].description).to.eql('This is a film two');    \r",
+									"    pm.expect(jsonData[1].releaseDate).to.eql('1980-04-17');\r",
+									"    pm.expect(jsonData[1].duration).to.eql(140);\r",
+									"    pm.expect(jsonData[1].averageScore).to.eql(6);\r",
+									"    pm.expect(jsonData[1].mpa.id).to.eql(1);\r",
+									"    pm.expect(jsonData[1].mpa.name).not.null;\r",
+									"    if (jsonData[1].genres != null) {\r",
+									"        pm.expect(jsonData[1].genres.length).to.eql(1);\r",
+									"        pm.expect(jsonData[0].genres[0].id).to.eql(1);\r",
+									"    pm.expect(jsonData[0].genres[0].name).to.eql('Комедия');\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/films/common?userId=1&friendId=2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								"common"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "1"
+								},
+								{
+									"key": "friendId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
