@@ -137,7 +137,7 @@ public class FilmDaoImpl implements FilmDao {
                         "WHERE USER_ID = ?) " +
                         "AND USER_ID = ? " +
                         "GROUP BY F.FILM_ID " +
-                        "ORDER BY F.AVERAGE_SCORE, COUNT(L.USER_ID)";
+                        "ORDER BY F.AVERAGE_SCORE DESC, COUNT(L.USER_ID) DESC";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, userId, friendId);
     }
 
