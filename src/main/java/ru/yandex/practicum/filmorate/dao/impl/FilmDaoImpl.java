@@ -155,7 +155,7 @@ public class FilmDaoImpl implements FilmDao {
                         "(SELECT USERS.USER_ID, " +
                         "COUNT( " +
                         "CASE " +
-                        "WHEN LIKES.FILM_ID IN " +
+                        "WHEN BAD.FILM_ID IN " +
                         "(SELECT FILM_ID " +
                         "FROM LIKES " +
                         "WHERE USER_ID = ? " +
@@ -163,7 +163,11 @@ public class FilmDaoImpl implements FilmDao {
                         "ELSE NULL " +
                         "END) COUNT_FILMS " +
                         "FROM USERS " +
-                        "LEFT JOIN LIKES ON USERS.USER_ID = LIKES.USER_ID " +
+                        "LEFT JOIN ( " +
+                        "SELECT USER_ID, FILM_ID " +
+                        "FROM LIKES " +
+                        "WHERE SCORE <= 5 " +
+                        ") AS BAD ON USERS.USER_ID = BAD.USER_ID " +
                         "WHERE USERS.USER_ID <> ? " +
                         "GROUP BY  USERS.USER_ID) AS BAD_FILMS " +
                         "ON L.USER_ID = BAD_FILMS.USER_ID " +
@@ -171,7 +175,7 @@ public class FilmDaoImpl implements FilmDao {
                         "(SELECT USERS.USER_ID, " +
                         "COUNT( " +
                         "CASE " +
-                        "WHEN LIKES.FILM_ID IN " +
+                        "WHEN GOOD.FILM_ID IN " +
                         "(SELECT FILM_ID " +
                         "FROM LIKES " +
                         "WHERE USER_ID = ? " +
@@ -179,11 +183,15 @@ public class FilmDaoImpl implements FilmDao {
                         "ELSE NULL " +
                         "END) COUNT_FILMS " +
                         "FROM USERS " +
-                        "LEFT JOIN LIKES ON USERS.USER_ID = LIKES.USER_ID " +
+                        "LEFT JOIN ( " +
+                        "SELECT USER_ID, FILM_ID " +
+                        "FROM LIKES " +
+                        "WHERE SCORE >= 6 " +
+                        ") AS GOOD ON USERS.USER_ID = GOOD.USER_ID " +
                         "WHERE USERS.USER_ID <> ? " +
                         "GROUP BY  USERS.USER_ID) AS GOOD_FILMS ON L.USER_ID = GOOD_FILMS.USER_ID " +
-                        "GROUP BY  L.USER_ID, BAD_FILMS.COUNT_FILMS, GOOD_FILMS.COUNT_FILMS " +
-                        "ORDER BY  (BAD_FILMS.COUNT_FILMS + GOOD_FILMS.COUNT_FILMS) DESC  " +
+                        "GROUP BY  L.USER_ID " +
+                        "ORDER BY  (BAD_FILMS.COUNT_FILMS + GOOD_FILMS.COUNT_FILMS) DESC " +
                         "LIMIT 1) " +
                         "AND L.FILM_ID NOT IN " +
                         "(SELECT FILM_ID " +
