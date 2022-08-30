@@ -19,26 +19,9 @@ public class LikesDaoImpl implements LikesDao {
 
     @Override
     @Transactional
-    public boolean addOrUpdateLike(long userId, long filmId, Integer score) {
-        try {
-            return addLike(userId, filmId,  score);
-        } catch (DuplicateKeyException e) {
-            return updateLike(userId, filmId, score);
-        }
-    }
-
-    private boolean addLike(long userId, long filmId, Integer score) throws DuplicateKeyException {
-        String sqlQuery = "INSERT INTO LIKES(user_id, film_id, score) VALUES (?, ?, ?)";
+    public boolean addLike(long userId, long filmId, Integer score) throws DuplicateKeyException {
+        String sqlQuery = "MERGE INTO LIKES(user_id, film_id, score) VALUES (?, ?, ?)";
         boolean successfullyUpdated = jdbcTemplate.update(sqlQuery, userId, filmId, score) > 0;
-        if (successfullyUpdated) {
-            recalculateAverageScore(filmId);
-        }
-        return successfullyUpdated;
-    }
-
-    private boolean updateLike(long userId, long filmId, Integer score) {
-        String sqlQuery = "UPDATE likes SET score = ? WHERE user_id = ? AND film_id = ?";
-        boolean successfullyUpdated = jdbcTemplate.update(sqlQuery, score, userId, filmId) > 0;
         if (successfullyUpdated) {
             recalculateAverageScore(filmId);
         }
@@ -55,7 +38,7 @@ public class LikesDaoImpl implements LikesDao {
     }
 
     private void recalculateAverageScore(long filmId) {
-        String sqlQuery = "UPDATE films SET average_score = (SELECT ROUND(AVG(score), 1) " +
+        String sqlQuery = "UPDATE films SET rating = (SELECT ROUND(AVG(score), 1) " +
                 "FROM likes WHERE film_id = ?) " +
                 "WHERE film_id = ?";
         jdbcTemplate.update(sqlQuery, filmId, filmId);

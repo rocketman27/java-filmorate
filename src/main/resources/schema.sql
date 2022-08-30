@@ -14,7 +14,7 @@ create table if not exists FILMS
     RELEASE_DATE  DATE,
     DURATION      INTEGER,
     MPA_ID        BIGINT,
-    AVERAGE_SCORE DECIMAL(3, 1),
+    RATING DECIMAL(3, 1),
         constraint PK_FILMS
             primary key (FILM_ID),
     constraint FK_FILMS_MPA
@@ -144,6 +144,7 @@ create table if not exists REVIEWS
     foreign key (AUTHOR_ID) references USERS (USER_ID)
         ON DELETE CASCADE
 );
+
 create table if not exists REVIEWS_LIKES
 (
     REVIEW_ID   BIGINT  not null,

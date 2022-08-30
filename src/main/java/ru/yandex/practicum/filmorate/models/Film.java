@@ -29,7 +29,7 @@ public class Film {
     private int duration;
     @NotNull
     private Mpa mpa;
-    private Float averageScore;
+    private Float rating;
     private final Set<Genre> genres = new LinkedHashSet<>();
     private final Set<Director> directors = new LinkedHashSet<>();
 
@@ -49,7 +49,7 @@ public class Film {
         values.put("description", description);
         values.put("release_date", releaseDate);
         values.put("duration", duration);
-        values.put("average_score", averageScore);
+        values.put("average_score", rating);
         if (mpa != null) {
             values.put("mpa_id", mpa.getId());
         }

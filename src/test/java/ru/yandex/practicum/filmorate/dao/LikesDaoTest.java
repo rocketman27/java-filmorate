@@ -34,14 +34,14 @@ public class LikesDaoTest {
                 .withReleaseDate(LocalDate.of(2000, 01, 01))
                 .withMpa(new Mpa(1, "PG-13"))
                 .withDuration(120)
-                .withAverageScore(0F)
+                .withRating(0F)
                 .build();
     }
 
     @Test
     void shouldAddAndRecalculateScore() {
-        likesDao.addOrUpdateLike(1, 1, 9);
+        likesDao.addLike(1, 1, 9);
         Film actual = filmDao.getFilmById(1);
-        assertThat(actual.getAverageScore()).isNotNull().isEqualTo(9F);
+        assertThat(actual.getRating()).isNotNull().isEqualTo(9F);
     }
 }

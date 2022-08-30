@@ -49,7 +49,7 @@ public class FilmDaoTest {
                         .withDuration(100)
                         .withReleaseDate(LocalDate.of(2022, 8, 10))
                         .withMpa(new Mpa(1, "G"))
-                        .withAverageScore(0F)
+                        .withRating(0F)
                         .build();
 
         film = filmDao.addFilm(film);
@@ -75,7 +75,7 @@ public class FilmDaoTest {
                         .withDuration(101)
                         .withReleaseDate(LocalDate.of(2022, 7, 10))
                         .withMpa(new Mpa(1, "G"))
-                        .withAverageScore(0F)
+                        .withRating(0F)
                         .build();
 
         filmDao.updateFilm(film);

@@ -239,7 +239,7 @@ public class FilmServiceImpl implements FilmService {
         if (score != null) {
             scoreValue = score.getScore();
         }
-        boolean successfullyAdded = likesDao.addOrUpdateLike(userId, filmId, scoreValue);
+        boolean successfullyAdded = likesDao.addLike(userId, filmId, scoreValue);
         if (successfullyAdded) {
             log.info("Score by userId={}, filmId={}, value={} has been inserted", userId, filmId, scoreValue);
         } else {

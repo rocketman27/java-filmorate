@@ -43,21 +43,20 @@ public class ReviewDaoImpl implements ReviewDao {
     }
 
     @Override
-    public Review updateReview(Review review) {
+    public void updateReview(Long reviewId, String content, boolean isPositive) {
         String sqlQuery = "UPDATE REVIEWS " +
                 "SET CONTENT = ?, IS_POSITIVE = ?" +
                 "WHERE REVIEW_ID = ?";
 
         int rowsUpdated = jdbcTemplate.update(sqlQuery,
-                review.getContent(),
-                review.getIsPositive(),
-                review.getReviewId());
+                content,
+                isPositive,
+                reviewId);
 
         if (rowsUpdated == 0) {
             throw new ReviewNotFoundException(String.format("Review with review_id=%s doesn't exist",
-                    review.getReviewId()));
+                    reviewId));
         }
-        return review;
     }
 
     @Override

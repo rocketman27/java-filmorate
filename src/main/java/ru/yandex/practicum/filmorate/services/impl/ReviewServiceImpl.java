@@ -40,10 +40,6 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Review addReview(Review review) {
-        if (review == null) {
-            log.warn("Received request to update the review=null");
-            return null;
-        }
         log.info("Received request to add review");
 
         userDao.getUserById(review.getUserId());
@@ -57,13 +53,11 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Review updateReview(Review review) {
-        if (review == null) {
-            log.warn("Received request to update the review=null");
-            return null;
-        }
         log.info("Received request to update the review with id={}", review.getReviewId());
 
-        reviewDao.updateReview(review);
+        userDao.getUserById(review.getUserId());
+        filmDao.getFilmById(review.getFilmId());
+        reviewDao.updateReview(review.getReviewId(), review.getContent(), review.getIsPositive());
         log.info("Review with review_id={} has been updated", review.getReviewId());
         Review updatedReview = reviewDao.getReviewById(review.getReviewId());
         Event event = createReviewEvent(updatedReview, UPDATE);
@@ -99,6 +93,7 @@ public class ReviewServiceImpl implements ReviewService {
         if (filmId == null) {
             reviews = reviewDao.getReviewsByFilmId(count);
         } else {
+            filmDao.getFilmById(filmId);
             reviews = reviewDao.getReviewsByFilmId(filmId, count);
         }
         return reviews;
