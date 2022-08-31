@@ -1064,7 +1064,7 @@
 									"    pm.expect(jsonData.releaseDate).to.eql('1979-04-17');\r",
 									"    pm.expect(jsonData.duration).to.eql(100);\r",
 									"    pm.expect(jsonData.mpa.id).to.eql(1);\r",
-									"    pm.expect(jsonData.averageScore).to.eql(6.7);\r",
+									"    pm.expect(jsonData.rating).to.eql(6.7);\r",
 									"    pm.expect(jsonData.mpa.name).not.null;\r",
 									"    if (jsonData.genres != null) {\r",
 									"        pm.expect(jsonData.genres.length).to.eql(1);\r",
@@ -1115,7 +1115,7 @@
 									"    pm.expect(jsonData[0].description).to.eql('This is a film four');    \r",
 									"    pm.expect(jsonData[0].releaseDate).to.eql('1982-04-17');\r",
 									"    pm.expect(jsonData[0].duration).to.eql(400);\r",
-									"    pm.expect(jsonData[0].averageScore).to.eql(9);\r",
+									"    pm.expect(jsonData[0].rating).to.eql(9);\r",
 									"    pm.expect(jsonData[0].mpa.id).to.eql(1);\r",
 									"    pm.expect(jsonData[0].mpa.name).not.null;\r",
 									"    if (jsonData[0].genres != null) {\r",
@@ -1143,322 +1143,6 @@
 							"variable": [
 								{
 									"key": "userId",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get popular films",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"pm.test(\"Get popular films\", function () {\r",
-									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData.length).to.eql(5);\r",
-									"    pm.expect(jsonData[0].id).to.eql(4);\r",
-									"    pm.expect(jsonData[0].name).to.eql('Film four');\r",
-									"    pm.expect(jsonData[0].description).to.eql('This is a film four');    \r",
-									"    pm.expect(jsonData[0].releaseDate).to.eql('1982-04-17');\r",
-									"    pm.expect(jsonData[0].duration).to.eql(400);\r",
-									"    pm.expect(jsonData[0].averageScore).to.eql(9);\r",
-									"    pm.expect(jsonData[0].mpa.id).to.eql(1);\r",
-									"    pm.expect(jsonData[0].mpa.name).not.null;\r",
-									"    if (jsonData[0].genres != null) {\r",
-									"        pm.expect(jsonData[0].genres.length).to.eql(1);\r",
-									"    }\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Get popular films\", function () {\r",
-									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData[1].id).to.eql(1);\r",
-									"    pm.expect(jsonData[1].name).to.eql('Film one');\r",
-									"    pm.expect(jsonData[1].description).to.eql('This is a film one');    \r",
-									"    pm.expect(jsonData[1].releaseDate).to.eql('1979-04-17');\r",
-									"    pm.expect(jsonData[1].duration).to.eql(100);\r",
-									"    pm.expect(jsonData[1].averageScore).to.eql(6.7);\r",
-									"    pm.expect(jsonData[1].mpa.id).to.eql(1);\r",
-									"    pm.expect(jsonData[1].mpa.name).not.null;\r",
-									"    if (jsonData[1].genres != null) {\r",
-									"        pm.expect(jsonData[1].genres.length).to.eql(1);\r",
-									"    }\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Get popular films\", function () {\r",
-									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData[2].id).to.eql(2);\r",
-									"    pm.expect(jsonData[2].name).to.eql('Film two');\r",
-									"    pm.expect(jsonData[2].description).to.eql('This is a film two');    \r",
-									"    pm.expect(jsonData[2].releaseDate).to.eql('1980-04-17');\r",
-									"    pm.expect(jsonData[2].duration).to.eql(140);\r",
-									"    pm.expect(jsonData[2].averageScore).to.eql(6);\r",
-									"    pm.expect(jsonData[2].mpa.id).to.eql(1);\r",
-									"    pm.expect(jsonData[2].mpa.name).not.null;\r",
-									"    if (jsonData[2].genres != null) {\r",
-									"        pm.expect(jsonData[2].genres.length).to.eql(1);\r",
-									"    }\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Get popular films\", function () {\r",
-									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData[3].id).to.eql(3);\r",
-									"    pm.expect(jsonData[3].name).to.eql('Film three');\r",
-									"    pm.expect(jsonData[3].description).to.eql('This is a film three');    \r",
-									"    pm.expect(jsonData[3].releaseDate).to.eql('1981-04-17');\r",
-									"    pm.expect(jsonData[3].duration).to.eql(300);\r",
-									"    pm.expect(jsonData[3].averageScore).to.eql(5);\r",
-									"    pm.expect(jsonData[3].mpa.id).to.eql(1);\r",
-									"    pm.expect(jsonData[3].mpa.name).not.null;\r",
-									"    if (jsonData[3].genres != null) {\r",
-									"        pm.expect(jsonData[3].genres.length).to.eql(1);\r",
-									"    }\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Get popular films\", function () {\r",
-									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData[4].id).to.eql(5);\r",
-									"    pm.expect(jsonData[4].name).to.eql('Film five');\r",
-									"    pm.expect(jsonData[4].description).to.eql('This is a film five');    \r",
-									"    pm.expect(jsonData[4].releaseDate).to.eql('1983-04-17');\r",
-									"    pm.expect(jsonData[4].duration).to.eql(50);\r",
-									"    pm.expect(jsonData[4].averageScore).to.eql(5);\r",
-									"    pm.expect(jsonData[4].mpa.id).to.eql(1);\r",
-									"    pm.expect(jsonData[4].mpa.name).not.null;\r",
-									"    if (jsonData[4].genres != null) {\r",
-									"        pm.expect(jsonData[4].genres.length).to.eql(0);\r",
-									"    }\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/films/popular?count=5",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"films",
-								"popular"
-							],
-							"query": [
-								{
-									"key": "count",
-									"value": "5"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get popular films by genre",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Get popular films\", function () {\r",
-									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData[0].id).to.eql(1);\r",
-									"    pm.expect(jsonData[0].name).to.eql('Film one');\r",
-									"    pm.expect(jsonData[0].description).to.eql('This is a film one');    \r",
-									"    pm.expect(jsonData[0].releaseDate).to.eql('1979-04-17');\r",
-									"    pm.expect(jsonData[0].duration).to.eql(100);\r",
-									"    pm.expect(jsonData[0].averageScore).to.eql(6.7);\r",
-									"    pm.expect(jsonData[0].mpa.id).to.eql(1);\r",
-									"    pm.expect(jsonData[0].mpa.name).not.null;\r",
-									"    if (jsonData[0].genres != null) {\r",
-									"        pm.expect(jsonData[0].genres.length).to.eql(1);\r",
-									"    }\r",
-									"    pm.expect(jsonData[0].genres[0].id).to.eql(1);\r",
-									"    pm.expect(jsonData[0].genres[0].name).to.eql('Комедия');\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Get popular films\", function () {\r",
-									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData[1].id).to.eql(2);\r",
-									"    pm.expect(jsonData[1].name).to.eql('Film two');\r",
-									"    pm.expect(jsonData[1].description).to.eql('This is a film two');    \r",
-									"    pm.expect(jsonData[1].releaseDate).to.eql('1980-04-17');\r",
-									"    pm.expect(jsonData[1].duration).to.eql(140);\r",
-									"    pm.expect(jsonData[1].averageScore).to.eql(6);\r",
-									"    pm.expect(jsonData[1].mpa.id).to.eql(1);\r",
-									"    pm.expect(jsonData[1].mpa.name).not.null;\r",
-									"    if (jsonData[1].genres != null) {\r",
-									"        pm.expect(jsonData[1].genres.length).to.eql(1);\r",
-									"    }\r",
-									"    pm.expect(jsonData[1].genres[0].id).to.eql(1);\r",
-									"    pm.expect(jsonData[1].genres[0].name).to.eql('Комедия');\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/films/popular?genreId=1",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"films",
-								"popular"
-							],
-							"query": [
-								{
-									"key": "genreId",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get popular films by year",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Get popular films\", function () {\r",
-									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData[0].id).to.eql(2);\r",
-									"    pm.expect(jsonData[0].name).to.eql('Film two');\r",
-									"    pm.expect(jsonData[0].description).to.eql('This is a film two');    \r",
-									"    pm.expect(jsonData[0].releaseDate).to.eql('1980-04-17');\r",
-									"    pm.expect(jsonData[0].duration).to.eql(140);\r",
-									"    pm.expect(jsonData[0].averageScore).to.eql(6);\r",
-									"    pm.expect(jsonData[0].mpa.id).to.eql(1);\r",
-									"    pm.expect(jsonData[0].mpa.name).not.null;\r",
-									"    if (jsonData[0].genres != null) {\r",
-									"        pm.expect(jsonData[0].genres.length).to.eql(1);\r",
-									"    }\r",
-									"    pm.expect(jsonData[0].genres[0].id).to.eql(1);\r",
-									"    pm.expect(jsonData[0].genres[0].name).to.eql('Комедия');\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/films/popular?year=1980",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"films",
-								"popular"
-							],
-							"query": [
-								{
-									"key": "year",
-									"value": "1980"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get popular films by director",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Get popular films\", function () {\r",
-									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData[0].id).to.eql(1);\r",
-									"    pm.expect(jsonData[0].name).to.eql('Film one');\r",
-									"    pm.expect(jsonData[0].description).to.eql('This is a film one');    \r",
-									"    pm.expect(jsonData[0].releaseDate).to.eql('1979-04-17');\r",
-									"    pm.expect(jsonData[0].duration).to.eql(100);\r",
-									"    pm.expect(jsonData[0].averageScore).to.eql(6.7);\r",
-									"    pm.expect(jsonData[0].mpa.id).to.eql(1);\r",
-									"    pm.expect(jsonData[0].mpa.name).not.null;\r",
-									"    if (jsonData[0].genres != null) {\r",
-									"        pm.expect(jsonData[0].genres.length).to.eql(1);\r",
-									"    }\r",
-									"    pm.expect(jsonData[0].genres[0].id).to.eql(1);\r",
-									"    pm.expect(jsonData[0].genres[0].name).to.eql('Комедия');\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Get popular films\", function () {\r",
-									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData[1].id).to.eql(5);\r",
-									"    pm.expect(jsonData[1].name).to.eql('Film five');\r",
-									"    pm.expect(jsonData[1].description).to.eql('This is a film five');    \r",
-									"    pm.expect(jsonData[1].releaseDate).to.eql('1983-04-17');\r",
-									"    pm.expect(jsonData[1].duration).to.eql(50);\r",
-									"    pm.expect(jsonData[1].averageScore).to.eql(5);\r",
-									"    pm.expect(jsonData[1].mpa.id).to.eql(1);\r",
-									"    pm.expect(jsonData[1].mpa.name).not.null;\r",
-									"    if (jsonData[1].genres != null) {\r",
-									"        pm.expect(jsonData[1].genres.length).to.eql(0);\r",
-									"    }\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/films/director/:directorId?sortBy=likes",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"films",
-								"director",
-								":directorId"
-							],
-							"query": [
-								{
-									"key": "sortBy",
-									"value": "likes"
-								}
-							],
-							"variable": [
-								{
-									"key": "directorId",
 									"value": "1"
 								}
 							]
@@ -1519,6 +1203,311 @@
 					"response": []
 				},
 				{
+					"name": "Get popular films",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Get popular films\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.length).to.eql(4);\r",
+									"    pm.expect(jsonData[0].id).to.eql(4);\r",
+									"    pm.expect(jsonData[0].name).to.eql('Film four');\r",
+									"    pm.expect(jsonData[0].description).to.eql('This is a film four');    \r",
+									"    pm.expect(jsonData[0].releaseDate).to.eql('1982-04-17');\r",
+									"    pm.expect(jsonData[0].duration).to.eql(400);\r",
+									"    pm.expect(jsonData[0].rating).to.eql(9);\r",
+									"    pm.expect(jsonData[0].mpa.id).to.eql(1);\r",
+									"    pm.expect(jsonData[0].mpa.name).not.null;\r",
+									"    if (jsonData[0].genres != null) {\r",
+									"        pm.expect(jsonData[0].genres.length).to.eql(1);\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get popular films\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData[1].id).to.eql(6);\r",
+									"    pm.expect(jsonData[1].name).to.eql('Film six');\r",
+									"    pm.expect(jsonData[1].description).to.eql('This is a film six');    \r",
+									"    pm.expect(jsonData[1].releaseDate).to.eql('1984-04-17');\r",
+									"    pm.expect(jsonData[1].duration).to.eql(60);\r",
+									"    pm.expect(jsonData[1].rating).to.eql(8);\r",
+									"    pm.expect(jsonData[1].mpa.id).to.eql(2);\r",
+									"    pm.expect(jsonData[1].mpa.name).not.null;\r",
+									"    if (jsonData[1].genres != null) {\r",
+									"        pm.expect(jsonData[1].genres.length).to.eql(0);\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get popular films\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData[2].id).to.eql(1);\r",
+									"    pm.expect(jsonData[2].name).to.eql('Film one');\r",
+									"    pm.expect(jsonData[2].description).to.eql('This is a film one');    \r",
+									"    pm.expect(jsonData[2].releaseDate).to.eql('1979-04-17');\r",
+									"    pm.expect(jsonData[2].duration).to.eql(100);\r",
+									"    pm.expect(jsonData[2].rating).to.eql(6.7);\r",
+									"    pm.expect(jsonData[2].mpa.id).to.eql(1);\r",
+									"    pm.expect(jsonData[2].mpa.name).not.null;\r",
+									"    if (jsonData[2].genres != null) {\r",
+									"        pm.expect(jsonData[2].genres.length).to.eql(1);\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get popular films\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData[3].id).to.eql(2);\r",
+									"    pm.expect(jsonData[3].name).to.eql('Film two');\r",
+									"    pm.expect(jsonData[3].description).to.eql('This is a film two');    \r",
+									"    pm.expect(jsonData[3].releaseDate).to.eql('1980-04-17');\r",
+									"    pm.expect(jsonData[3].duration).to.eql(140);\r",
+									"    pm.expect(jsonData[3].rating).to.eql(6);\r",
+									"    pm.expect(jsonData[3].mpa.id).to.eql(1);\r",
+									"    pm.expect(jsonData[3].mpa.name).not.null;\r",
+									"    if (jsonData[3].genres != null) {\r",
+									"        pm.expect(jsonData[3].genres.length).to.eql(1);\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/films/popular?count=4",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								"popular"
+							],
+							"query": [
+								{
+									"key": "count",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get popular films by genre",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get popular films\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData[0].id).to.eql(1);\r",
+									"    pm.expect(jsonData[0].name).to.eql('Film one');\r",
+									"    pm.expect(jsonData[0].description).to.eql('This is a film one');    \r",
+									"    pm.expect(jsonData[0].releaseDate).to.eql('1979-04-17');\r",
+									"    pm.expect(jsonData[0].duration).to.eql(100);\r",
+									"    pm.expect(jsonData[0].rating).to.eql(6.7);\r",
+									"    pm.expect(jsonData[0].mpa.id).to.eql(1);\r",
+									"    pm.expect(jsonData[0].mpa.name).not.null;\r",
+									"    if (jsonData[0].genres != null) {\r",
+									"        pm.expect(jsonData[0].genres.length).to.eql(1);\r",
+									"    }\r",
+									"    pm.expect(jsonData[0].genres[0].id).to.eql(1);\r",
+									"    pm.expect(jsonData[0].genres[0].name).to.eql('Комедия');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get popular films\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData[1].id).to.eql(2);\r",
+									"    pm.expect(jsonData[1].name).to.eql('Film two');\r",
+									"    pm.expect(jsonData[1].description).to.eql('This is a film two');    \r",
+									"    pm.expect(jsonData[1].releaseDate).to.eql('1980-04-17');\r",
+									"    pm.expect(jsonData[1].duration).to.eql(140);\r",
+									"    pm.expect(jsonData[1].rating).to.eql(6);\r",
+									"    pm.expect(jsonData[1].mpa.id).to.eql(1);\r",
+									"    pm.expect(jsonData[1].mpa.name).not.null;\r",
+									"    if (jsonData[1].genres != null) {\r",
+									"        pm.expect(jsonData[1].genres.length).to.eql(1);\r",
+									"    }\r",
+									"    pm.expect(jsonData[1].genres[0].id).to.eql(1);\r",
+									"    pm.expect(jsonData[1].genres[0].name).to.eql('Комедия');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/films/popular?genreId=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								"popular"
+							],
+							"query": [
+								{
+									"key": "genreId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get popular films by year",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get popular films\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData[0].id).to.eql(2);\r",
+									"    pm.expect(jsonData[0].name).to.eql('Film two');\r",
+									"    pm.expect(jsonData[0].description).to.eql('This is a film two');    \r",
+									"    pm.expect(jsonData[0].releaseDate).to.eql('1980-04-17');\r",
+									"    pm.expect(jsonData[0].duration).to.eql(140);\r",
+									"    pm.expect(jsonData[0].rating).to.eql(6);\r",
+									"    pm.expect(jsonData[0].mpa.id).to.eql(1);\r",
+									"    pm.expect(jsonData[0].mpa.name).not.null;\r",
+									"    if (jsonData[0].genres != null) {\r",
+									"        pm.expect(jsonData[0].genres.length).to.eql(1);\r",
+									"    }\r",
+									"    pm.expect(jsonData[0].genres[0].id).to.eql(1);\r",
+									"    pm.expect(jsonData[0].genres[0].name).to.eql('Комедия');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/films/popular?year=1980",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								"popular"
+							],
+							"query": [
+								{
+									"key": "year",
+									"value": "1980"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get popular films by director",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Get popular films\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData[0].id).to.eql(6);\r",
+									"    pm.expect(jsonData[0].name).to.eql('Film six');\r",
+									"    pm.expect(jsonData[0].description).to.eql('This is a film six');    \r",
+									"    pm.expect(jsonData[0].releaseDate).to.eql('1984-04-17');\r",
+									"    pm.expect(jsonData[0].duration).to.eql(60);\r",
+									"    pm.expect(jsonData[0].rating).to.eql(8);\r",
+									"    pm.expect(jsonData[0].mpa.id).to.eql(2);\r",
+									"    pm.expect(jsonData[0].mpa.name).not.null;\r",
+									"    if (jsonData[0].genres != null) {\r",
+									"        pm.expect(jsonData[0].genres.length).to.eql(0);\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get popular films\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData[1].id).to.eql(1);\r",
+									"    pm.expect(jsonData[1].name).to.eql('Film one');\r",
+									"    pm.expect(jsonData[1].description).to.eql('This is a film one');    \r",
+									"    pm.expect(jsonData[1].releaseDate).to.eql('1979-04-17');\r",
+									"    pm.expect(jsonData[1].duration).to.eql(100);\r",
+									"    pm.expect(jsonData[1].rating).to.eql(6.7);\r",
+									"    pm.expect(jsonData[1].mpa.id).to.eql(1);\r",
+									"    pm.expect(jsonData[1].mpa.name).not.null;\r",
+									"    if (jsonData[1].genres != null) {\r",
+									"        pm.expect(jsonData[1].genres.length).to.eql(1);\r",
+									"    }\r",
+									"    pm.expect(jsonData[1].genres[0].id).to.eql(1);\r",
+									"    pm.expect(jsonData[1].genres[0].name).to.eql('Комедия');\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/films/director/:directorId?sortBy=likes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"films",
+								"director",
+								":directorId"
+							],
+							"query": [
+								{
+									"key": "sortBy",
+									"value": "likes"
+								}
+							],
+							"variable": [
+								{
+									"key": "directorId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get recommendations for user 2",
 					"event": [
 						{
@@ -1536,7 +1525,7 @@
 									"    pm.expect(jsonData[0].description).to.eql('This is a film six');    \r",
 									"    pm.expect(jsonData[0].releaseDate).to.eql('1984-04-17');\r",
 									"    pm.expect(jsonData[0].duration).to.eql(60);\r",
-									"    pm.expect(jsonData[0].averageScore).to.eql(8);\r",
+									"    pm.expect(jsonData[0].rating).to.eql(8);\r",
 									"    pm.expect(jsonData[0].mpa.id).to.eql(2);\r",
 									"    pm.expect(jsonData[0].mpa.name).not.null;\r",
 									"    if (jsonData[0].genres != null) {\r",
@@ -1590,7 +1579,7 @@
 									"    pm.expect(jsonData[0].description).to.eql('This is a film one');    \r",
 									"    pm.expect(jsonData[0].releaseDate).to.eql('1979-04-17');\r",
 									"    pm.expect(jsonData[0].duration).to.eql(100);\r",
-									"    pm.expect(jsonData[0].averageScore).to.eql(6.7);\r",
+									"    pm.expect(jsonData[0].rating).to.eql(6.7);\r",
 									"    pm.expect(jsonData[0].mpa.id).to.eql(1);\r",
 									"    pm.expect(jsonData[0].mpa.name).not.null;\r",
 									"    if (jsonData[0].genres != null) {\r",
@@ -1607,7 +1596,7 @@
 									"    pm.expect(jsonData[1].description).to.eql('This is a film two');    \r",
 									"    pm.expect(jsonData[1].releaseDate).to.eql('1980-04-17');\r",
 									"    pm.expect(jsonData[1].duration).to.eql(140);\r",
-									"    pm.expect(jsonData[1].averageScore).to.eql(6);\r",
+									"    pm.expect(jsonData[1].rating).to.eql(6);\r",
 									"    pm.expect(jsonData[1].mpa.id).to.eql(1);\r",
 									"    pm.expect(jsonData[1].mpa.name).not.null;\r",
 									"    if (jsonData[1].genres != null) {\r",

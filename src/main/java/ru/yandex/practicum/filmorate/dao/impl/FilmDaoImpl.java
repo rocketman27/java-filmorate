@@ -12,6 +12,8 @@ import ru.yandex.practicum.filmorate.models.Mpa;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -58,6 +60,18 @@ public class FilmDaoImpl implements FilmDao {
         } catch (EmptyResultDataAccessException e) {
             throw new FilmNotFoundException(String.format("Film with id=%s doesn't exist", id));
         }
+    }
+
+    @Override
+    public List<Film> getFilmsById(Collection<Long> ids) {
+        String values = String.join(",", Collections.nCopies(ids.size(), "?"));
+        String sqlQuery = String.format("SELECT f.film_id, f.name, f.description, " +
+                "f.release_date, f.duration, f.mpa_id, " +
+                "f.rating, m.name AS mpa_name " +
+                "FROM films f " +
+                "JOIN mpa m on f.mpa_id = m.mpa_id " +
+                "WHERE film_id IN (%s)", values);
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, ids.toArray());
     }
 
     @Override
@@ -139,66 +153,6 @@ public class FilmDaoImpl implements FilmDao {
                         "GROUP BY F.FILM_ID " +
                         "ORDER BY F.rating DESC, COUNT(L.USER_ID) DESC";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, userId, friendId);
-    }
-
-    @Override
-    public List<Film> getRecommendation(long userId) {
-        String sqlQuery =
-                "SELECT F.*, M.NAME MPA_NAME " +
-                        "FROM FILMS F " +
-                        "INNER JOIN MPA M ON M.MPA_ID = F.MPA_ID " +
-                        "INNER JOIN LIKES L ON F.FILM_ID = L.FILM_ID " +
-                        "WHERE L.USER_ID = " +
-                        "(SELECT L.USER_ID " +
-                        "FROM LIKES L " +
-                        "INNER JOIN " +
-                        "(SELECT USERS.USER_ID, " +
-                        "COUNT( " +
-                        "CASE " +
-                        "WHEN BAD.FILM_ID IN " +
-                        "(SELECT FILM_ID " +
-                        "FROM LIKES " +
-                        "WHERE USER_ID = ? " +
-                        "AND SCORE <= 5) THEN 1 " +
-                        "ELSE NULL " +
-                        "END) COUNT_FILMS " +
-                        "FROM USERS " +
-                        "LEFT JOIN ( " +
-                        "SELECT USER_ID, FILM_ID " +
-                        "FROM LIKES " +
-                        "WHERE SCORE <= 5 " +
-                        ") AS BAD ON USERS.USER_ID = BAD.USER_ID " +
-                        "WHERE USERS.USER_ID <> ? " +
-                        "GROUP BY  USERS.USER_ID) AS BAD_FILMS " +
-                        "ON L.USER_ID = BAD_FILMS.USER_ID " +
-                        "INNER JOIN " +
-                        "(SELECT USERS.USER_ID, " +
-                        "COUNT( " +
-                        "CASE " +
-                        "WHEN GOOD.FILM_ID IN " +
-                        "(SELECT FILM_ID " +
-                        "FROM LIKES " +
-                        "WHERE USER_ID = ? " +
-                        "AND SCORE >= 6) THEN 1 " +
-                        "ELSE NULL " +
-                        "END) COUNT_FILMS " +
-                        "FROM USERS " +
-                        "LEFT JOIN ( " +
-                        "SELECT USER_ID, FILM_ID " +
-                        "FROM LIKES " +
-                        "WHERE SCORE >= 6 " +
-                        ") AS GOOD ON USERS.USER_ID = GOOD.USER_ID " +
-                        "WHERE USERS.USER_ID <> ? " +
-                        "GROUP BY  USERS.USER_ID) AS GOOD_FILMS ON L.USER_ID = GOOD_FILMS.USER_ID " +
-                        "GROUP BY  L.USER_ID " +
-                        "ORDER BY  (BAD_FILMS.COUNT_FILMS + GOOD_FILMS.COUNT_FILMS) DESC " +
-                        "LIMIT 1) " +
-                        "AND L.FILM_ID NOT IN " +
-                        "(SELECT FILM_ID " +
-                        "FROM LIKES " +
-                        "WHERE USER_ID = ? " +
-                        "OR SCORE < 6)";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, userId, userId, userId, userId, userId);
     }
 
     @Override

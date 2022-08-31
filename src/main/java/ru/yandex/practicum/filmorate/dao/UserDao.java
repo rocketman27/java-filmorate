@@ -13,5 +13,7 @@ public interface UserDao {
 
     User updateUser(User user);
 
+    List<Long> getSimilarUsersIds(long userId, int limit);
+
     boolean removeUser(long id);
 }

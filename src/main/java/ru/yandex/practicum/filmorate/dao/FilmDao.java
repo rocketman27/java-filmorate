@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.dao;
 
 import ru.yandex.practicum.filmorate.models.Film;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface FilmDao {
@@ -10,6 +11,8 @@ public interface FilmDao {
     List<Film> getFilms();
 
     Film getFilmById(long id);
+
+    List<Film> getFilmsById(Collection<Long> ids);
 
     List<Film> getPopularFilms(int limit);
 
@@ -20,8 +23,6 @@ public interface FilmDao {
     List<Film> getPopularFilms(int limit, long genreId, int year);
 
     List<Film> getCommonFilms(int userId, int friendId);
-
-    List<Film> getRecommendation(long userId);
 
     List<Film> getSearch(String query);
 
