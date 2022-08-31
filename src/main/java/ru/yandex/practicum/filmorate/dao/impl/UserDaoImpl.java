@@ -74,6 +74,32 @@ public class UserDaoImpl implements UserDao {
         return jdbcTemplate.update(sqlQuery, userId) > 0;
     }
 
+    @Override
+    public List<Long> getSimilarUsersIds(long userId, int limit) {
+        String sqlQuery = "SELECT USER_ID FROM " +
+                "(SELECT USER_ID, SUM(FILMS_COUNT) FROM (SELECT USER_ID, COUNT(USER_ID) AS FILMS_COUNT " +
+                "FROM LIKES " +
+                "WHERE FILM_ID IN (SELECT FILM_ID  " +
+                "                        FROM LIKES " +
+                "                        WHERE USER_ID = ? " +
+                "                        AND SCORE <= 5) AND USER_ID <> 1 AND SCORE <= 5 " +
+                "GROUP BY USER_ID " +
+                "UNION ALL " +
+                "SELECT USER_ID, COUNT(USER_ID) AS FILMS_COUNT " +
+                "FROM LIKES " +
+                "WHERE FILM_ID IN (SELECT FILM_ID " +
+                "                        FROM LIKES " +
+                "                        WHERE USER_ID = ? " +
+                "                        AND SCORE >= 6) AND USER_ID <> ? AND SCORE >= 6 " +
+                "GROUP BY USER_ID) " +
+                "GROUP BY USER_ID " +
+                "ORDER BY SUM(FILMS_COUNT) " +
+                "LIMIT ?" +
+                ")";
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> rs.getLong("user_id"),
+                userId, userId, userId, limit);
+    }
+
     private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
         return User.builder()
                    .withId(resultSet.getLong("user_id"))

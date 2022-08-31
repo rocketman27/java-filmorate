@@ -46,10 +46,6 @@ public class DirectorServiceImpl implements DirectorService {
 
     @Override
     public Director add(Director director) {
-        if (director == null) {
-            log.warn("Received request to add the director=null");
-            return null;
-        }
         log.info("Received request to add a director");
         if ((director = directorDao.add(director)) != null) {
             log.info("New director: {} was successfully added", director);
@@ -59,10 +55,6 @@ public class DirectorServiceImpl implements DirectorService {
 
     @Override
     public Director update(Director director) {
-        if (director == null) {
-            log.warn("Received request to update the director=null");
-            return null;
-        }
         log.info("Received request to update a director with id={}", director.getId());
         if ((director = directorDao.update(director)) != null) {
             log.info("Director with id={} was successfully updated", director.getId());

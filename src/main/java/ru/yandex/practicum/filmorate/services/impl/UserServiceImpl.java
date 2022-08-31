@@ -2,9 +2,11 @@ package ru.yandex.practicum.filmorate.services.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.EventsDao;
 import ru.yandex.practicum.filmorate.dao.FriendsDao;
+import ru.yandex.practicum.filmorate.dao.LikesDao;
 import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.dao.GenresDao;
@@ -15,10 +17,12 @@ import ru.yandex.practicum.filmorate.models.OperationType;
 import ru.yandex.practicum.filmorate.models.User;
 import ru.yandex.practicum.filmorate.models.Film;
 import ru.yandex.practicum.filmorate.services.UserService;
+import ru.yandex.practicum.filmorate.utils.SlopeOneForFilmorate;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.filmorate.models.EventType.*;
@@ -27,12 +31,15 @@ import static ru.yandex.practicum.filmorate.models.OperationType.*;
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
+    private final static int SIMILAR_USERS_LIMIT = 20;
+    private final static int MIN_POSITIVE_SCORE = 6;
     private final UserDao userDao;
     private final FriendsDao friendsDao;
     private final FilmDao filmDao;
     private final GenresDao genresDao;
     private final DirectorDao directorDao;
     private final EventsDao eventsDao;
+    private final LikesDao likesDao;
 
     @Autowired
     public UserServiceImpl(UserDao userDao,
@@ -40,13 +47,15 @@ public class UserServiceImpl implements UserService {
                            FilmDao filmDao,
                            GenresDao genresDao,
                            DirectorDao directorDao,
-                           EventsDao eventsDao) {
+                           EventsDao eventsDao,
+                           LikesDao likesDao) {
         this.userDao = userDao;
         this.friendsDao = friendsDao;
         this.filmDao = filmDao;
         this.genresDao = genresDao;
         this.directorDao = directorDao;
         this.eventsDao = eventsDao;
+        this.likesDao = likesDao;
     }
 
     @Override
@@ -139,7 +148,26 @@ public class UserServiceImpl implements UserService {
     public List<Film> getRecommendation(long userId) {
         log.info("Received request to get a list of recommendation films for userId={}", userId);
         userDao.getUserById(userId);
-        List<Film> films = filmDao.getRecommendation(userId);
+
+        List<Long> userIds = userDao.getSimilarUsersIds(userId, SIMILAR_USERS_LIMIT);
+        if (userIds.size() == 0) {
+            return new ArrayList<>();
+        }
+
+        userIds.add(userId);
+        Map<Long, Map<Long, Integer>> userScores = likesDao.getUsersScores(userIds);
+        SlopeOneForFilmorate slopeOneForFilmorate = new SlopeOneForFilmorate(userScores);
+        Map<Long, Double> predictedScores = slopeOneForFilmorate.predictScores(userId);
+
+        List<Long> filmIds = new ArrayList<>();
+        for (Map.Entry<Long, Double> predScore : predictedScores.entrySet()) {
+            if (predScore.getValue() >= MIN_POSITIVE_SCORE &&
+                    !userScores.get(userId).containsKey(predScore.getKey())) {
+                filmIds.add(predScore.getKey());
+            }
+        }
+        List<Film> films = filmDao.getFilmsById(filmIds);
+
         films.forEach(f -> {
             f.setGenres(genresDao.getGenresByFilmId(f.getId()));
             f.setDirectors(directorDao.getDirectorsByFilmId(f.getId()));

@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.dao.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.filmorate.dao.LikesReviewDao;
 
 @Repository
@@ -15,6 +16,7 @@ public class LikesReviewDaoImpl implements LikesReviewDao {
     }
 
     @Override
+    @Transactional
     public boolean addLikeForReview(long reviewId, long userId, boolean type) {
         String sqlQuery = "INSERT INTO REVIEWS_LIKES(REVIEW_ID, USER_ID, IS_POSITIVE) VALUES (?,?,? ) ";
 
@@ -32,6 +34,7 @@ public class LikesReviewDaoImpl implements LikesReviewDao {
     }
 
     @Override
+    @Transactional
     public boolean deleteLikeForReview(long reviewId, long userId, boolean type) {
         String sqlQuery = "DELETE FROM REVIEWS_LIKES WHERE review_id = ? AND user_id = ? AND IS_POSITIVE=?";
 

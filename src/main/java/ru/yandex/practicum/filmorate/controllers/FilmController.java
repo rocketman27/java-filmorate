@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.models.Film;
+import ru.yandex.practicum.filmorate.models.Score;
 import ru.yandex.practicum.filmorate.services.FilmService;
 
 import javax.validation.Valid;
@@ -78,8 +79,9 @@ public class FilmController {
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public void addLike(@PathVariable long id, @PathVariable long userId) {
-        filmService.addLike(id, userId);
+    public void addLike(@PathVariable long id, @PathVariable long userId,
+                        @RequestBody(required = false) Score score) {
+        filmService.addLike(id, userId, score);
     }
 
     @DeleteMapping("/{id}/like/{userId}")

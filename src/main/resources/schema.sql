@@ -8,14 +8,15 @@ create table if not exists MPA
 
 create table if not exists FILMS
 (
-    FILM_ID      BIGINT auto_increment,
-    NAME         CHARACTER VARYING(100) not null,
-    DESCRIPTION  CHARACTER VARYING(200),
-    RELEASE_DATE DATE,
-    DURATION     INTEGER,
-    MPA_ID       BIGINT,
-    constraint PK_FILMS
-        primary key (FILM_ID),
+    FILM_ID       BIGINT auto_increment,
+    NAME          CHARACTER VARYING(100) not null,
+    DESCRIPTION   CHARACTER VARYING(200),
+    RELEASE_DATE  DATE,
+    DURATION      INTEGER,
+    MPA_ID        BIGINT,
+    RATING DECIMAL(3, 1),
+        constraint PK_FILMS
+            primary key (FILM_ID),
     constraint FK_FILMS_MPA
         foreign key (MPA_ID) references MPA
 );
@@ -103,8 +104,9 @@ create table if not exists LIKES
 (
     USER_ID BIGINT not null,
     FILM_ID BIGINT not null,
-    constraint PK_USERS_LIKES
-        primary key (USER_ID, FILM_ID),
+    SCORE   INTEGER CHECK(SCORE BETWEEN 1 AND 10),
+        constraint PK_USERS_LIKES
+            primary key (USER_ID, FILM_ID),
     constraint FK_USERS_LIKES_FILMS
         foreign key (FILM_ID) references FILMS
             ON DELETE CASCADE,
@@ -115,12 +117,12 @@ create table if not exists LIKES
 
 create table if not exists EVENTS
 (
-    EVENT_ID BIGINT auto_increment,
-    USER_ID BIGINT not null,
-    ENTITY_ID BIGINT not null,
-    EVENT_TYPE CHARACTER VARYING(20) not null,
+    EVENT_ID       BIGINT auto_increment,
+    USER_ID        BIGINT                not null,
+    ENTITY_ID      BIGINT                not null,
+    EVENT_TYPE     CHARACTER VARYING(20) not null,
     OPERATION_TYPE CHARACTER VARYING(20) not null,
-    CREATED_AT TIMESTAMP not null,
+    CREATED_AT     TIMESTAMP             not null,
     constraint PK_EVENTS
         primary key (EVENT_ID),
     constraint FK_EVENTS_USERS
@@ -142,6 +144,7 @@ create table if not exists REVIEWS
     foreign key (AUTHOR_ID) references USERS (USER_ID)
         ON DELETE CASCADE
 );
+
 create table if not exists REVIEWS_LIKES
 (
     REVIEW_ID   BIGINT  not null,

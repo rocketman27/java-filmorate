@@ -16,11 +16,11 @@ import ru.yandex.practicum.filmorate.exceptions.IllegalSearchArgumentException;
 import ru.yandex.practicum.filmorate.exceptions.LikeNotFoundException;
 import ru.yandex.practicum.filmorate.models.Director;
 import ru.yandex.practicum.filmorate.models.Event;
-import ru.yandex.practicum.filmorate.models.EventType;
 import ru.yandex.practicum.filmorate.models.Film;
 import ru.yandex.practicum.filmorate.models.Genre;
 import ru.yandex.practicum.filmorate.models.Mpa;
 import ru.yandex.practicum.filmorate.models.OperationType;
+import ru.yandex.practicum.filmorate.models.Score;
 import ru.yandex.practicum.filmorate.services.FilmService;
 
 import java.time.Instant;
@@ -33,6 +33,7 @@ import static ru.yandex.practicum.filmorate.models.OperationType.*;
 @Slf4j
 @Service
 public class FilmServiceImpl implements FilmService {
+    private final static Integer DEFAULT_SCORE = 10;
     private final FilmDao filmDao;
     private final MpaDao mpaDao;
     private final GenresDao genresDao;
@@ -232,13 +233,17 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public void addLike(long filmId, long userId) {
-        log.info("Received request to add a like by userId={}, for filmId={}", userId, filmId);
-        boolean successfullyAdded = likesDao.addLike(userId, filmId);
+    public void addLike(long filmId, long userId, Score score) {
+        log.info("Received request to add a score by userId={}, for filmId={}", userId, filmId);
+        Integer scoreValue = DEFAULT_SCORE;
+        if (score != null) {
+            scoreValue = score.getScore();
+        }
+        boolean successfullyAdded = likesDao.addLike(userId, filmId, scoreValue);
         if (successfullyAdded) {
-            log.info("Like by userId={}, filmId={} has been inserted", userId, filmId);
+            log.info("Score by userId={}, filmId={}, value={} has been inserted", userId, filmId, scoreValue);
         } else {
-            log.warn("Cannot add like by userId={} for filmId={}", userId, filmId);
+            log.warn("Cannot add score by userId={} for filmId={}, value={}", userId, filmId, scoreValue);
         }
         Event event = createFilmEvent(userId, filmId, ADD);
         eventsDao.addEvent(event);
@@ -246,12 +251,13 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public void deleteLike(long filmId, long userId) {
-        log.info("Received request to delete a like by userId={}, for filmId={}", userId, filmId);
+        log.info("Received request to delete a score by userId={}, for filmId={}", userId, filmId);
         boolean successfullyDeleted = likesDao.deleteLike(userId, filmId);
         if (successfullyDeleted) {
-            log.info("Like by userId={}, filmId={} has been deleted", userId, filmId);
+            log.info("Score by userId={}, filmId={} has been deleted", userId, filmId);
         } else {
-            throw new LikeNotFoundException(String.format("Like by userId=%s, filmId=%s is not found", userId, filmId));
+            throw new LikeNotFoundException(String.format("Score by userId=%s, filmId=%s is not found",
+                    userId, filmId));
         }
         Event event = createFilmEvent(userId, filmId, REMOVE);
         eventsDao.addEvent(event);

@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.services;
 
+import org.springframework.data.relational.core.sql.In;
 import ru.yandex.practicum.filmorate.models.Film;
+import ru.yandex.practicum.filmorate.models.Score;
 
 import java.util.List;
 
@@ -19,7 +21,7 @@ public interface FilmService {
 
     Film updateFilm(Film film);
 
-    void addLike(long filmId, long userId);
+    void addLike(long filmId, long userId, Score score);
 
     void deleteLike(long filmId, long userId);
 
